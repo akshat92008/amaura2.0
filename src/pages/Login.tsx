@@ -83,7 +83,8 @@ export const Login = () => {
       
       try {
         const clientCredential = await createUserWithEmailAndPassword(auth, clientEmail, clientPassword);
-        await setDoc(doc(db, 'users', clientCredential.user.uid), {
+        const clientUid = clientCredential.user.uid;
+        await setDoc(doc(db, 'users', clientUid), {
           email: clientEmail,
           role: 'tenant_admin',
           tenantID: 'c1', // Apex Solar mock data
@@ -94,11 +95,24 @@ export const Login = () => {
           },
           createdAt: Date.now()
         });
+
+        // 4. Seed Mock Leads for this tenant
+        const { addDoc, collection } = await import('firebase/firestore');
+        const leads = [
+          { name: 'Alex Rivers', email: 'alex@example.com', phone: '555-0101', status: 'won', source: 'Website', tenantID: 'c1', createdAt: Date.now() - 86400000 },
+          { name: 'Sarah Chen', email: 'sarah@example.com', phone: '555-0102', status: 'new', source: 'Referral', tenantID: 'c1', createdAt: Date.now() - 172800000 },
+          { name: 'Marcus Thorne', email: 'marcus@example.com', phone: '555-0103', status: 'contacted', source: 'Google Ads', tenantID: 'c1', createdAt: Date.now() - 259200000 },
+          { name: 'Elena Gilbert', email: 'elena@gmail.com', phone: '555-0104', status: 'new', source: 'Facebook', tenantID: 'c1', createdAt: Date.now() - 345600000 }
+        ];
+
+        for (const lead of leads) {
+          await addDoc(collection(db, 'leads'), lead);
+        }
       } catch (e: any) {
-        console.log('Client user exists or error');
+        console.log('Client user exists or error during lead seeding');
       }
 
-      alert('Database Synced! \n\nClient Login: \nEmail: demo@amaura.studio \nPass: password123');
+      alert('Database Synced & Leads Seeded! \n\nClient Login: \nEmail: demo@amaura.studio \nPass: password123');
     } catch (error: any) {
       console.error(error);
       alert('Initialization failed: ' + error.message);

@@ -20,29 +20,36 @@ export const useAuth = create<AuthState>((set) => ({
 
   init: () => {
     onAuthStateChanged(auth, async (firebaseUser) => {
+      const { useStore } = await import('../store');
+      
       if (firebaseUser) {
         // Fetch user profile from Firestore
         const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
+          const user = {
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            displayName: firebaseUser.displayName || userData.displayName,
+            tenantID: userData.tenantID,
+            role: userData.role,
+            brandConfig: userData.brandConfig,
+          };
+          
           set({
-            user: {
-              uid: firebaseUser.uid,
-              email: firebaseUser.email,
-              displayName: firebaseUser.displayName || userData.displayName,
-              tenantID: userData.tenantID,
-              role: userData.role,
-              brandConfig: userData.brandConfig,
-            },
+            user,
             isAuthenticated: true,
             isLoading: false,
           });
+
+          // Sync with UI store
+          useStore.getState().login(userData.role as any, userData.tenantID);
         } else {
-          // Fallback if no profile exists yet
           set({ user: null, isAuthenticated: false, isLoading: false });
         }
       } else {
         set({ user: null, isAuthenticated: false, isLoading: false });
+        useStore.getState().logout();
       }
     });
   },
@@ -57,18 +64,24 @@ export const useAuth = create<AuthState>((set) => ({
       const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
       if (userDoc.exists()) {
         const userData = userDoc.data();
+        const user = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName || userData.displayName,
+          tenantID: userData.tenantID,
+          role: userData.role,
+          brandConfig: userData.brandConfig,
+        };
+
         set({
-          user: {
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            displayName: firebaseUser.displayName || userData.displayName,
-            tenantID: userData.tenantID,
-            role: userData.role,
-            brandConfig: userData.brandConfig,
-          },
+          user,
           isAuthenticated: true,
           isLoading: false,
         });
+
+        // Sync with UI store
+        const { useStore } = await import('../store');
+        useStore.getState().login(userData.role as any, userData.tenantID);
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -79,6 +92,8 @@ export const useAuth = create<AuthState>((set) => ({
 
   logout: async () => {
     await signOut(auth);
+    const { useStore } = await import('../store');
+    useStore.getState().logout();
     set({ user: null, isAuthenticated: false });
   }
 }));

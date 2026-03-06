@@ -60,20 +60,27 @@ export const Login = () => {
       const { createUserWithEmailAndPassword } = await import('firebase/auth');
       
       // 1. Create the Auth User
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCredential.user.uid;
 
-      // 2. Seed the Profile in Firestore using the NEW UID
-      await setDoc(doc(db, 'users', uid), {
-        email: email,
-        role: 'admin',
-        displayName: 'Master Admin',
-        createdAt: Date.now()
-      });
+        // 2. Seed the Profile in Firestore using the NEW UID
+        await setDoc(doc(db, 'users', uid), {
+          email: email,
+          role: 'admin',
+          displayName: 'Master Admin',
+          createdAt: Date.now()
+        });
+      } catch (adminError: any) {
+        if (adminError.code !== 'auth/email-already-in-use') {
+          throw adminError;
+        }
+        console.log('Admin account already exists, continuing to client seed...');
+      }
 
       // 3. Create a formal Client Admin (Tenant)
       const clientEmail = 'roofing@amaura.studio';
-      const clientPassword = 'amaura_client_2024';
+      const clientPassword = 'password123';
       
       try {
         const clientCredential = await createUserWithEmailAndPassword(auth, clientEmail, clientPassword);
@@ -92,14 +99,10 @@ export const Login = () => {
         console.log('Client user exists or error');
       }
 
-      alert('Database Synced! \n\nClient Login: \nEmail: roofing@amaura.studio \nPass: amaura_client_2024');
+      alert('Database Synced! \n\nClient Login: \nEmail: roofing@amaura.studio \nPass: password123');
     } catch (error: any) {
       console.error(error);
-      if (error.code === 'auth/email-already-in-use') {
-        alert('This email is already an Admin. Use a NEW email in the form above for your Super Admin account.');
-      } else {
-        alert('Initialization failed: ' + error.message);
-      }
+      alert('Initialization failed: ' + error.message);
     } finally {
       setIsSeeding(false);
     }
@@ -200,7 +203,8 @@ export const Login = () => {
 
         <div className="mt-8 pt-6 border-t border-[var(--color-amaura-border)] text-center text-xs text-[var(--color-amaura-text-muted)] flex flex-col space-y-2">
           <p>Super Admin: master@amaura.studio</p>
-          <p>Tenant 1: roofing@example.com</p>
+          <p>Tenant Login: roofing@amaura.studio</p>
+          <p>Tenant Pass: password123</p>
         </div>
       </div>
     </div>

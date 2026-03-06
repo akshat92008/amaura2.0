@@ -5,15 +5,15 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   
-  --color-amaura-bg: #0D0D0D;
-  --color-amaura-surface: #151A21;
-  --color-amaura-surface-hover: #1E252E;
-  --color-amaura-border: rgba(255, 255, 255, 0.08);
-  --color-amaura-blue: #00F0FF;
-  --color-primary: #7C3AED; /* Default purple */
-  --color-amaura-emerald: #00FF9D;
-  --color-amaura-text: #E4E7EB;
-  --color-amaura-text-muted: #8B949E;
+  --color-amaura-bg: #09090b;
+  --color-amaura-surface: #18181b;
+  --color-amaura-surface-hover: #27272a;
+  --color-amaura-border: rgba(255, 255, 255, 0.05);
+  --color-amaura-blue: #6366f1; /* Indigo 500 */
+  --color-primary: #4f46e5; /* Indigo 600 */
+  --color-amaura-emerald: #10b981;
+  --color-amaura-text: #fafafa;
+  --color-amaura-text-muted: #a1a1aa;
 }
 
 body {
@@ -42,6 +42,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .glow-emerald {
   box-shadow: 0 0 40px -10px rgba(0, 255, 157, 0.3);
+}
+
+@layer utilities {
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+  }
 }
 
 /* Custom scrollbar for dark theme */

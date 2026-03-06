@@ -79,7 +79,7 @@ export const Login = () => {
       }
 
       // 3. Create a formal Client Admin (Tenant)
-      const clientEmail = 'roofing@amaura.studio';
+      const clientEmail = 'demo@amaura.studio';
       const clientPassword = 'password123';
       
       try {
@@ -99,7 +99,7 @@ export const Login = () => {
         console.log('Client user exists or error');
       }
 
-      alert('Database Synced! \n\nClient Login: \nEmail: roofing@amaura.studio \nPass: password123');
+      alert('Database Synced! \n\nClient Login: \nEmail: demo@amaura.studio \nPass: password123');
     } catch (error: any) {
       console.error(error);
       alert('Initialization failed: ' + error.message);
@@ -203,7 +203,7 @@ export const Login = () => {
 
         <div className="mt-8 pt-6 border-t border-[var(--color-amaura-border)] text-center text-xs text-[var(--color-amaura-text-muted)] flex flex-col space-y-2">
           <p>Super Admin: master@amaura.studio</p>
-          <p>Tenant Login: roofing@amaura.studio</p>
+          <p>Tenant Login: demo@amaura.studio</p>
           <p>Tenant Pass: password123</p>
         </div>
       </div>

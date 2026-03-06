@@ -4,6 +4,8 @@ import { useTheme } from '../contexts/ThemeContext';
 import { 
   LayoutDashboard, 
   Users, 
+  Columns,
+  FolderKanban,
   Inbox, 
   Calculator, 
   Settings, 
@@ -18,6 +20,8 @@ export const Sidebar = () => {
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
     { icon: Users, label: 'Leads', path: '/leads' },
+    { icon: Columns, label: 'Kanban Board', path: '/kanban' },
+    { icon: FolderKanban, label: 'Projects', path: '/projects' },
     { icon: Inbox, label: 'Inbox', path: '/inbox' },
     { icon: Calculator, label: 'ROI Calc', path: '/roi' },
   ];

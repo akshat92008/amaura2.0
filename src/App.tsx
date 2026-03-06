@@ -6,6 +6,9 @@ import { LandingPage } from './pages/LandingPage';
 import { Login } from './pages/Login';
 import { ClientDashboard } from './pages/ClientDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { Leads } from './pages/Leads';
+import { KanbanBoard } from './pages/KanbanBoard';
+import { Projects } from './pages/Projects';
 
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useAuth } from './hooks/useAuth';
@@ -28,6 +31,9 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<ClientDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/leads" element={<Leads />} />
+            <Route path="/kanban" element={<KanbanBoard />} />
+            <Route path="/projects" element={<Projects />} />
           </Routes>
         </main>
         <Footer />

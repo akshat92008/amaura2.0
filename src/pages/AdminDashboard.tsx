@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Shield, Wallet, Users, Activity, ExternalLink, Unlock, Plus } from 'lucide-react';
-import { useStore } from '../store';
+import { Shield, Wallet, Users, Activity, ExternalLink, Unlock, Plus, Code, Copy, Check } from 'lucide-react';
+import { useStore, ClientData } from '../store';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -10,6 +10,9 @@ import { Input } from '../components/ui/Input';
 export function AdminDashboard() {
   const { role, clients, agencyWalletBalance, forceUnlockMilestone, addClient } = useStore();
   const [isAddingClient, setIsAddingClient] = useState(false);
+  const [activeConnectionClient, setActiveConnectionClient] = useState<ClientData | null>(null);
+  const [copied, setCopied] = useState(false);
+  
   const [newClient, setNewClient] = useState({
     name: '',
     email: '',
@@ -22,6 +25,24 @@ export function AdminDashboard() {
   if (role !== 'admin') {
     return <Navigate to="/login" replace />;
   }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const getSnippet = (clientId: string) => `// Amaura Lead Hook for ${clientId}
+const TENANT_ID = '${clientId}'; 
+const API_URL = 'https://YOUR_PROJECT.netlify.app/.netlify/functions/inbound-lead';
+
+async function syncLead(data) {
+  return fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tenantID: TENANT_ID, ...data })
+  });
+}`;
 
   const handleAddClient = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +63,45 @@ export function AdminDashboard() {
   return (
     <div className="min-h-screen bg-amaura-bg pt-20 pb-12 px-6">
       <div className="max-w-7xl mx-auto">
+        {/* Connection Modal */}
+        {activeConnectionClient && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-amaura-surface border border-amaura-border p-8 rounded-3xl max-w-2xl w-full shadow-2xl"
+            >
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Connect {activeConnectionClient.name}</h3>
+                  <p className="text-sm text-amaura-text-muted italic">Copy this snippet to their website's contact form success handler.</p>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setActiveConnectionClient(null)}>Close</Button>
+              </div>
+
+              <div className="relative group">
+                <pre className="bg-black/50 p-6 rounded-xl border border-amaura-border overflow-x-auto font-mono text-sm text-amaura-blue leading-relaxed">
+                  {getSnippet(activeConnectionClient.id)}
+                </pre>
+                <button 
+                  onClick={() => copyToClipboard(getSnippet(activeConnectionClient.id))}
+                  className="absolute top-4 right-4 p-2 rounded-lg bg-amaura-surface border border-amaura-border hover:bg-amaura-surface-hover transition-colors"
+                >
+                  {copied ? <Check className="w-4 h-4 text-amaura-emerald" /> : <Copy className="w-4 h-4 text-amaura-text-muted" />}
+                </button>
+              </div>
+
+              <div className="mt-8 pt-8 border-t border-amaura-border flex justify-between items-center">
+                <div className="flex items-center gap-2 text-xs text-amaura-text-muted">
+                  <div className="w-2 h-2 rounded-full bg-amaura-emerald" />
+                  Hook ID: {activeConnectionClient.id}
+                </div>
+                <Button onClick={() => setActiveConnectionClient(null)}>Done</Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         <header className="flex justify-between items-end mb-12">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -157,19 +217,24 @@ export function AdminDashboard() {
           <div className="space-y-6">
             {clients.map(client => (
               <Card key={client.id} className="overflow-hidden">
-                <div className="p-6 border-b border-amaura-border bg-amaura-surface/50 flex justify-between items-center">
+                <div className="p-6 border-b border-amaura-border bg-amaura-surface/50 flex justify-between items-center text-white">
                   <div>
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-xl font-display font-bold text-white">{client.name}</h3>
+                      <h3 className="text-xl font-display font-bold">{client.name}</h3>
                       <span className="px-2 py-0.5 rounded text-xs font-medium bg-amaura-blue/10 text-amaura-blue border border-amaura-blue/20">
                         {client.industry}
                       </span>
                     </div>
                     <p className="text-sm text-amaura-text-muted">{client.email}</p>
                   </div>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    View Portal <ExternalLink className="w-4 h-4" />
-                  </Button>
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" size="sm" className="gap-2 text-[var(--color-primary)] border-[var(--color-primary)]/30" onClick={() => setActiveConnectionClient(client)}>
+                      <Code className="w-4 h-4" /> Connect site
+                    </Button>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      View Portal <ExternalLink className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
                 
                 <div className="p-6 bg-amaura-bg">

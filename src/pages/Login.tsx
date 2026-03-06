@@ -95,8 +95,12 @@ export const Login = () => {
           },
           createdAt: Date.now()
         });
+      } catch (e: any) {
+        console.log('Client user exists, skipping creation...');
+      }
 
-        // 4. Seed Mock Leads for this tenant
+      // 4. Seed Mock Leads for this tenant (ALWAYS RUNS)
+      try {
         const { addDoc, collection } = await import('firebase/firestore');
         const leads = [
           { name: 'Alex Rivers', email: 'alex@example.com', phone: '555-0101', status: 'won', source: 'Website', tenantID: 'c1', createdAt: Date.now() - 86400000 },
@@ -108,8 +112,9 @@ export const Login = () => {
         for (const lead of leads) {
           await addDoc(collection(db, 'leads'), lead);
         }
-      } catch (e: any) {
-        console.log('Client user exists or error during lead seeding');
+        console.log('Leads seeded successfully');
+      } catch (leadError) {
+        console.error('Lead seeding failed:', leadError);
       }
 
       alert('Database Synced & Leads Seeded! \n\nClient Login: \nEmail: demo@amaura.studio \nPass: password123');

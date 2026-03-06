@@ -17,20 +17,30 @@ export const Login = () => {
     e.preventDefault();
     if (!email || !password) return;
 
-    await login(email, password);
-    
-    // In a real app, `login` sets user state, we can listen to `user.brandConfig` 
-    // to update the context, or do it immediately here:
-    const { useAuth: authState } = await import('../hooks/useAuth');
-    const user = authState.getState().user;
-    if (user?.brandConfig) {
-      setBrandConfig(user.brandConfig);
-    }
+    try {
+      await login(email, password);
+      
+      // In a real app, `login` sets user state, we can listen to `user.brandConfig` 
+      // to update the context, or do it immediately here:
+      const { useAuth: authState } = await import('../hooks/useAuth');
+      const user = authState.getState().user;
+      
+      if (!user) {
+        throw new Error("Login successful, but no account profile was found in the database. Please click 'Initialize Backend Strategy' first.");
+      }
 
-    if (user?.role === 'admin') {
-      navigate('/admin');
-    } else {
-      navigate('/dashboard');
+      if (user?.brandConfig) {
+        setBrandConfig(user.brandConfig);
+      }
+
+      if (user?.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (error: any) {
+      console.error(error);
+      alert('Access Denied: ' + (error.message || 'Check your credentials or click Initialize below.'));
     }
   };
 

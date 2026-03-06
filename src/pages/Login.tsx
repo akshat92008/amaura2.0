@@ -124,9 +124,8 @@ export const Login = () => {
               </div>
               <input
                 type="email"
-                required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.trim())}
                 className="w-full bg-[var(--color-amaura-surface)] border border-[var(--color-amaura-border)] rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all"
                 style={{ '--tw-ring-color': 'var(--color-primary)' } as React.CSSProperties}
                 placeholder="master@amaura.studio"
@@ -144,7 +143,6 @@ export const Login = () => {
               </div>
               <input
                 type="password"
-                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-[var(--color-amaura-surface)] border border-[var(--color-amaura-border)] rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all"
@@ -154,35 +152,44 @@ export const Login = () => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full flex justify-center py-3 px-4 rounded-lg font-medium text-white transition-all hover:-translate-y-0.5"
-            style={{ backgroundColor: 'var(--color-primary)' }}
-          >
-            {isLoading ? (
-              <Loader2 className="animate-spin h-5 w-5" />
-            ) : (
-              <div className="flex items-center space-x-2">
-                <span>Enter Hub</span>
-                <ChevronRight className="h-4 w-4" />
-              </div>
-            )}
-          </button>
+          <div className="space-y-3">
+            <button
+              type="submit"
+              disabled={isLoading || isSeeding}
+              className="w-full flex justify-center py-3 px-4 rounded-lg font-medium text-white transition-all hover:-translate-y-0.5 shadow-lg active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--color-primary)' }}
+            >
+              {isLoading ? (
+                <Loader2 className="animate-spin h-5 w-5" />
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <span>Enter Hub</span>
+                  <ChevronRight className="h-4 w-4" />
+                </div>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSeed}
+              disabled={isLoading || isSeeding}
+              className="w-full flex justify-center py-3 px-4 rounded-lg font-medium text-white transition-all border border-amaura-blue/30 bg-amaura-blue/5 hover:bg-amaura-blue/10 active:scale-[0.98]"
+            >
+              {isSeeding ? (
+                <Loader2 className="animate-spin h-5 w-5" />
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Database className="h-4 w-4" />
+                  <span>First Time? Initialize Admin</span>
+                </div>
+              )}
+            </button>
+          </div>
         </form>
 
         <div className="mt-8 pt-6 border-t border-[var(--color-amaura-border)] text-center text-xs text-[var(--color-amaura-text-muted)] flex flex-col space-y-2">
           <p>Super Admin: master@amaura.studio</p>
           <p>Tenant 1: roofing@example.com</p>
-          <p>Tenant 1: roofing@example.com</p>
-          <p>Tenant 2: plumbing@example.com</p>
-          <button 
-            onClick={handleSeed}
-            disabled={isSeeding}
-            className="mt-4 text-[10px] opacity-30 hover:opacity-100 transition-opacity flex items-center justify-center gap-1 mx-auto"
-          >
-            <Database className="w-3 h-3" /> {isSeeding ? 'Initializing...' : 'Initialize Backend Strategy'}
-          </button>
         </div>
       </div>
     </div>

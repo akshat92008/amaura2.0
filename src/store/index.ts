@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type UserRole = 'admin' | 'client' | null;
+export type UserRole = 'admin' | 'tenant_admin' | null;
 export type Industry = 'Solar' | 'HVAC' | 'Plumbing';
 
 export interface Milestone {
@@ -75,10 +75,10 @@ export const useStore = create<AppState>()(
       clients: MOCK_CLIENTS,
       agencyWalletBalance: 2000, // Initial balance from mock data
       
-      login: (role, clientId) => set((state) => {
+      login: (role, tenantID) => set((state) => {
         if (role === 'admin') return { role, currentUser: null };
-        if (role === 'client' && clientId) {
-          const client = state.clients.find(c => c.id === clientId) || null;
+        if (role === 'tenant_admin' && tenantID) {
+          const client = state.clients.find(c => c.id === tenantID) || state.clients[0];
           return { role, currentUser: client };
         }
         return { role: null, currentUser: null };

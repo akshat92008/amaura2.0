@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Shield, Wallet, Users, Activity, ExternalLink, Unlock, Plus, Code, Copy, Check } from 'lucide-react';
 import { useStore, ClientData } from '../store';
@@ -8,7 +8,14 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 
 export function AdminDashboard() {
-  const { role, clients, agencyWalletBalance, forceUnlockMilestone, addClient } = useStore();
+  const navigate = useNavigate();
+  const { role, clients, agencyWalletBalance, forceUnlockMilestone, addClient, login } = useStore();
+  
+  const handlePreviewPortal = (clientId: string) => {
+    // Super Admin can "impersonate" or preview a client portal
+    login('tenant_admin', clientId);
+    navigate('/dashboard');
+  };
   const [isAddingClient, setIsAddingClient] = useState(false);
   const [activeConnectionClient, setActiveConnectionClient] = useState<ClientData | null>(null);
   const [copied, setCopied] = useState(false);
@@ -231,7 +238,12 @@ async function syncLead(data) {
                     <Button variant="outline" size="sm" className="gap-2 text-[var(--color-primary)] border-[var(--color-primary)]/30" onClick={() => setActiveConnectionClient(client)}>
                       <Code className="w-4 h-4" /> Connect site
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="gap-2"
+                      onClick={() => handlePreviewPortal(client.id)}
+                    >
                       View Portal <ExternalLink className="w-4 h-4" />
                     </Button>
                   </div>

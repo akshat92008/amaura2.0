@@ -9,7 +9,7 @@ export type User = {
   email: string | null;
   displayName: string | null;
   tenantID: string | null;
-  role: 'admin' | 'tenant' | 'user';
+  role: 'admin' | 'tenant_admin';
   brandConfig?: BrandConfig;
 };
 

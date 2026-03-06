@@ -35,8 +35,11 @@ export const Login = () => {
 
       if (user?.role === 'admin') {
         navigate('/admin');
-      } else {
+      } else if (user?.role === 'tenant_admin') {
         navigate('/dashboard');
+      } else {
+        // Fallback for unexpected roles
+        navigate('/login');
       }
     } catch (error: any) {
       console.error(error);
@@ -68,24 +71,32 @@ export const Login = () => {
         createdAt: Date.now()
       });
 
-      // 3. Seed a sample tenant (optional but helpful)
-      await setDoc(doc(db, 'users', 'SAMPLE_TENANT_ID'), {
-        email: 'roofing@example.com',
-        role: 'tenant_admin',
-        tenantID: 'ROOF_001',
-        displayName: 'Elite Shield Roofing',
-        brandConfig: {
-          primary: '#4f46e5',
-          logo: 'https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6'
-        },
-        createdAt: Date.now()
-      });
+      // 3. Create a formal Client Admin (Tenant)
+      const clientEmail = 'roofing@amaura.studio';
+      const clientPassword = 'amaura_client_2024';
+      
+      try {
+        const clientCredential = await createUserWithEmailAndPassword(auth, clientEmail, clientPassword);
+        await setDoc(doc(db, 'users', clientCredential.user.uid), {
+          email: clientEmail,
+          role: 'tenant_admin',
+          tenantID: 'c1', // Apex Solar mock data
+          displayName: 'Elite Shield Roofing',
+          brandConfig: {
+            primary: '#6366f1',
+            logo: 'https://cdn-icons-png.flaticon.com/512/606/606201.png'
+          },
+          createdAt: Date.now()
+        });
+      } catch (e: any) {
+        console.log('Client user exists or error');
+      }
 
-      alert('Success! Your Super Admin account has been created and the database is initialized. You can now login normally.');
+      alert('Database Synced! \n\nClient Login: \nEmail: roofing@amaura.studio \nPass: amaura_client_2024');
     } catch (error: any) {
       console.error(error);
       if (error.code === 'auth/email-already-in-use') {
-        alert('This email is already registered in Firebase. Just use the login button or choose a different email to seed.');
+        alert('This email is already an Admin. Use a NEW email in the form above for your Super Admin account.');
       } else {
         alert('Initialization failed: ' + error.message);
       }

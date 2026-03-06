@@ -9,6 +9,8 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { Leads } from './pages/Leads';
 import { KanbanBoard } from './pages/KanbanBoard';
 import { Projects } from './pages/Projects';
+import { Inbox } from './pages/Inbox';
+import { ROI } from './pages/ROI';
 
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useAuth } from './hooks/useAuth';
@@ -34,6 +36,8 @@ export default function App() {
             <Route path="/leads" element={<Leads />} />
             <Route path="/kanban" element={<KanbanBoard />} />
             <Route path="/projects" element={<Projects />} />
+            <Route path="/inbox" element={<Inbox />} />
+            <Route path="/roi" element={<ROI />} />
           </Routes>
         </main>
         <Footer />

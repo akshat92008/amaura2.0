@@ -49,24 +49,23 @@ export const Login = () => {
 
   const [isSeeding, setIsSeeding] = useState(false);
   const handleSeed = async () => {
-    if (!email || !password) {
-      alert('Please enter an email and password in the fields above first. These will become your Super Admin credentials.');
-      return;
-    }
-
     setIsSeeding(true);
     try {
       const { auth } = await import('../lib/firebase');
       const { createUserWithEmailAndPassword } = await import('firebase/auth');
       
+      // Use values from form or defaults
+      const adminEmail = email || 'master@amaura.studio';
+      const adminPassword = password || 'password123';
+      
       // 1. Create the Auth User
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
         const uid = userCredential.user.uid;
 
         // 2. Seed the Profile in Firestore using the NEW UID
         await setDoc(doc(db, 'users', uid), {
-          email: email,
+          email: adminEmail,
           role: 'admin',
           displayName: 'Master Admin',
           createdAt: Date.now()

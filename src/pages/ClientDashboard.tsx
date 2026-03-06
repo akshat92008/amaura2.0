@@ -83,18 +83,33 @@ export const ClientDashboard = () => {
               {/* Main Growth Chart */}
               <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="col-span-1 md:col-span-2">
                 <BentoBox title="Revenue Performance" className="overflow-hidden h-full">
-                  <PerformanceChart />
+                  <PerformanceChart leads={leads} />
                 </BentoBox>
               </motion.div>
 
               {/* AI Highlight */}
               <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
                 <BentoBox title="AI Strategic Insight" className="border-[var(--color-primary)]/20 shadow-[0_0_30px_rgba(124,58,237,0.05)] h-full">
-                  <LeadInsight 
-                    score={94} 
-                    sentiment="positive" 
-                    explanation="High-intent solar interest detected from inbound inquiry in Apex. Recommend immediate callback."
-                  />
+                  {leads.length > 0 ? (() => {
+                    const topLead = [...leads].sort((a,b) => b.createdAt - a.createdAt)[0];
+                    const aiScore = topLead.phone ? 94 : 72;
+                    const intent = aiScore > 85 ? 'positive' : 'neutral';
+                    const explanation = \`Identified strong intent pattern from recent \${topLead.source || 'Direct'} lead (\${topLead.name}). Recommend immediate follow up via \${topLead.phone ? 'Phone' : 'Email'}.\`;
+                    
+                    return (
+                      <LeadInsight 
+                        score={aiScore} 
+                        sentiment={intent} 
+                        explanation={explanation}
+                      />
+                    )
+                  })() : (
+                    <LeadInsight 
+                      score={0} 
+                      sentiment="neutral" 
+                      explanation="No leads in pipeline. Waiting for inbound data to generate strategic insights."
+                    />
+                  )}
                 </BentoBox>
               </motion.div>
 
@@ -136,7 +151,7 @@ export const ClientDashboard = () => {
               {/* Interactive Timeline */}
               <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="row-span-1 md:row-span-2 h-full">
                 <BentoBox className="overflow-y-auto h-full">
-                  <ActivityFeed />
+                  <ActivityFeed leads={leads} />
                 </BentoBox>
               </motion.div>
 

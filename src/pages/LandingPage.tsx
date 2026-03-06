@@ -25,18 +25,14 @@ export function LandingPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[var(--color-primary)]/20 blur-[120px] rounded-full pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center"
-          >
+          <div className="flex flex-col items-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amaura-surface border border-amaura-border text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted mb-10">
               <Sparkles className="w-3 h-3 text-amaura-blue" />
               <span>CRM Solution in 1 Place</span>
               <ArrowRight className="w-3 h-3" />
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-8 leading-[0.9] max-w-5xl">
+            <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-8 leading-[0.9] max-w-5xl opacity-100">
               We Engineer <span className="text-gradient animate-shimmer">High-Ticket CRMs</span> for Home Service Brands.
             </h1>
 
@@ -67,7 +63,7 @@ export function LandingPage() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

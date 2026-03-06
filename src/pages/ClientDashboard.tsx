@@ -9,8 +9,12 @@ import {
   DollarSign, 
   Percent, 
   ArrowUpRight,
-  Sparkles
+  Sparkles,
+  Zap
 } from 'lucide-react';
+import { LeadInsight } from '../components/LeadInsight';
+import { PerformanceChart } from '../components/PerformanceChart';
+import { ActivityFeed } from '../components/ActivityFeed';
 
 export const ClientDashboard = () => {
   const { leads, loading } = useLeads();
@@ -25,14 +29,18 @@ export const ClientDashboard = () => {
     <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
       <Sidebar />
       
-      <main className="flex-grow ml-64 p-8 lg:p-12 relative overflow-hidden">
+      <main className="flex-grow ml-64 p-8 lg:p-12 relative overflow-y-auto">
         {/* Ambient background glows */}
         <div 
-          className="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] rounded-full blur-[150px] opacity-10 pointer-events-none"
+          className="absolute -top-[10%] -right-[10%] w-[60%] h-[60%] rounded-full blur-[180px] opacity-20 pointer-events-none animate-pulse"
           style={{ background: 'var(--color-primary)' }}
         />
+        <div 
+          className="absolute bottom-[-10%] left-[10%] w-[40%] h-[40%] rounded-full blur-[150px] opacity-10 pointer-events-none"
+          style={{ background: 'var(--color-amaura-blue)' }}
+        />
         
-        <div className="max-w-7xl mx-auto space-y-10 relative z-10">
+        <div className="max-w-7xl mx-auto space-y-12 relative z-10">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -58,8 +66,22 @@ export const ClientDashboard = () => {
 
           {/* Stats & Tools Grid */}
           <BentoGrid>
+            {/* Main Growth Chart */}
+            <BentoBox title="Revenue Performance" span="col-2" className="overflow-hidden">
+              <PerformanceChart />
+            </BentoBox>
+
+            {/* AI Highlight */}
+            <BentoBox title="AI Strategic Insight" className="border-[var(--color-primary)]/20 shadow-[0_0_30px_rgba(124,58,237,0.05)]">
+              <LeadInsight 
+                score={94} 
+                sentiment="positive" 
+                explanation="High-intent solar interest detected from inbound inquiry in Apex. Recommend immediate callback."
+              />
+            </BentoBox>
+
             {/* Stat 1 */}
-            <BentoBox title="Total Pipeline" className="justify-center">
+            <BentoBox title="Total Pipeline">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-5xl font-display font-bold">{totalLeads}</h4>
@@ -75,7 +97,7 @@ export const ClientDashboard = () => {
             </BentoBox>
 
             {/* Stat 2 */}
-            <BentoBox title="Conversion Velocity" className="justify-center">
+            <BentoBox title="Conversion Velocity">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-5xl font-display font-bold">{convRate}%</h4>
@@ -89,25 +111,17 @@ export const ClientDashboard = () => {
               </div>
             </BentoBox>
 
-            {/* ROI Calculator Box (Standalone tool) */}
-            <BentoBox title="ROI Intelligence" span="row-2" className="justify-between">
-              <ROICalculator />
+            {/* Interactive Timeline */}
+            <BentoBox span="row-2" className="overflow-y-auto">
+              <ActivityFeed />
             </BentoBox>
 
-            {/* Large Lead Table */}
-            <div className="col-span-1 md:col-span-2 row-span-2">
-              <LeadTable leads={leads} loading={loading} />
-            </div>
-
-            {/* Secondary CTA/Status */}
-            <BentoBox className="bg-gradient-to-br from-[var(--color-amaura-surface)] to-[var(--color-amaura-bg)] border-[var(--color-amaura-border)]">
+            {/* Partner Perk */}
+            <BentoBox className="bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent border-[var(--color-primary)]/20">
               <div className="h-full flex flex-col justify-between">
                 <div className="space-y-4">
-                  <div 
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ backgroundColor: 'var(--color-primary)' }}
-                  >
-                    <DollarSign className="w-5 h-5 text-white" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-[10px] font-black uppercase tracking-widest">
+                    <Zap className="w-3 h-3" /> Priority Tier
                   </div>
                   <div>
                     <h5 className="font-bold text-lg leading-tight">Partner Perks</h5>
@@ -122,6 +136,27 @@ export const ClientDashboard = () => {
                 </button>
               </div>
             </BentoBox>
+
+            {/* Large Lead Table */}
+            <div className="col-span-1 md:col-span-3">
+              <LeadTable leads={leads} loading={loading} />
+            </div>
+
+            {/* ROI Calculator Box (Standalone tool) */}
+            <div className="col-span-1 md:col-span-3">
+              <div className="p-8 lg:p-12 glass-panel rounded-[40px] border border-white/5 bg-gradient-to-br from-amaura-surface to-transparent shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                   <Sparkles className="w-24 h-24 text-[var(--color-primary)]" />
+                </div>
+                <div className="relative z-10">
+                  <div className="mb-10 text-left">
+                    <h3 className="text-3xl font-black font-display mb-2">ROI Intelligence</h3>
+                    <p className="text-amaura-text-muted text-sm max-w-lg">Advanced simulations for your home service revenue potential.</p>
+                  </div>
+                  <ROICalculator />
+                </div>
+              </div>
+            </div>
           </BentoGrid>
         </div>
       </main>

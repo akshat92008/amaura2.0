@@ -58,11 +58,11 @@ h1, h2, h3, h4, .font-display {
 }
 
 .glass-card {
-  @apply bg-amaura-surface/40 backdrop-blur-xl border border-white/5;
+  @apply bg-[#121214]/60 backdrop-blur-2xl border border-white/10 shadow-2xl;
 }
 
 .bento-inner {
-  @apply bg-zinc-900/50 border border-white/5 rounded-2xl;
+  @apply bg-zinc-900/40 border border-white/[0.05] rounded-[32px] backdrop-blur-md;
 }
 
 @layer utilities {

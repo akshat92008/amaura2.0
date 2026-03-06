@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
 import { BentoGrid, BentoBox } from '../components/BentoGrid';
 import { ROICalculator } from '../components/ROICalculator';
@@ -65,99 +66,125 @@ export const ClientDashboard = () => {
           </div>
 
           {/* Stats & Tools Grid */}
-          <BentoGrid>
-            {/* Main Growth Chart */}
-            <BentoBox title="Revenue Performance" span="col-2" className="overflow-hidden">
-              <PerformanceChart />
-            </BentoBox>
+          <motion.div 
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1
+                }
+              }
+            }}
+          >
+            <BentoGrid>
+              {/* Main Growth Chart */}
+              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="col-span-1 md:col-span-2">
+                <BentoBox title="Revenue Performance" className="overflow-hidden h-full">
+                  <PerformanceChart />
+                </BentoBox>
+              </motion.div>
 
-            {/* AI Highlight */}
-            <BentoBox title="AI Strategic Insight" className="border-[var(--color-primary)]/20 shadow-[0_0_30px_rgba(124,58,237,0.05)]">
-              <LeadInsight 
-                score={94} 
-                sentiment="positive" 
-                explanation="High-intent solar interest detected from inbound inquiry in Apex. Recommend immediate callback."
-              />
-            </BentoBox>
+              {/* AI Highlight */}
+              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+                <BentoBox title="AI Strategic Insight" className="border-[var(--color-primary)]/20 shadow-[0_0_30px_rgba(124,58,237,0.05)] h-full">
+                  <LeadInsight 
+                    score={94} 
+                    sentiment="positive" 
+                    explanation="High-intent solar interest detected from inbound inquiry in Apex. Recommend immediate callback."
+                  />
+                </BentoBox>
+              </motion.div>
 
-            {/* Stat 1 */}
-            <BentoBox title="Total Pipeline">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-5xl font-display font-bold">{totalLeads}</h4>
-                  <div className="flex items-center text-[var(--color-amaura-emerald)] text-xs mt-1">
-                    <ArrowUpRight className="w-3 h-3 mr-1" />
-                    <span>+12.5% vs last month</span>
+              {/* Stat 1 */}
+              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+                <BentoBox title="Total Pipeline">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-5xl font-display font-bold">{totalLeads}</h4>
+                      <div className="flex items-center text-[var(--color-amaura-emerald)] text-xs mt-1">
+                        <ArrowUpRight className="w-3 h-3 mr-1" />
+                        <span>+12.5% vs last month</span>
+                      </div>
+                    </div>
+                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
+                      <Users className="w-6 h-6 text-[var(--color-amaura-text-muted)] group-hover:text-white transition-colors" />
+                    </div>
+                  </div>
+                </BentoBox>
+              </motion.div>
+
+              {/* Stat 2 */}
+              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+                <BentoBox title="Conversion Velocity">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-5xl font-display font-bold">{convRate}%</h4>
+                      <div className="flex items-center text-[var(--color-amaura-text-muted)] text-xs mt-1">
+                        <span>Targeting 15%</span>
+                      </div>
+                    </div>
+                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
+                      <Percent className="w-6 h-6 text-[var(--color-amaura-text-muted)] group-hover:text-white transition-colors" />
+                    </div>
+                  </div>
+                </BentoBox>
+              </motion.div>
+
+              {/* Interactive Timeline */}
+              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="row-span-1 md:row-span-2 h-full">
+                <BentoBox className="overflow-y-auto h-full">
+                  <ActivityFeed />
+                </BentoBox>
+              </motion.div>
+
+              {/* Partner Perk */}
+              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+                <BentoBox className="bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent border-[var(--color-primary)]/20 h-full">
+                  <div className="h-full flex flex-col justify-between">
+                    <div className="space-y-4">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-[10px] font-black uppercase tracking-widest">
+                        <Zap className="w-3 h-3" /> Priority Tier
+                      </div>
+                      <div>
+                        <h5 className="font-bold text-lg leading-tight">Partner Perks</h5>
+                        <p className="text-xs text-[var(--color-amaura-text-muted)]">Exclusive access to Tier 1 pricing.</p>
+                      </div>
+                    </div>
+                    <button 
+                      className="w-full py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110 active:scale-95"
+                      style={{ backgroundColor: 'var(--color-primary)' }}
+                    >
+                      View Benefits
+                    </button>
+                  </div>
+                </BentoBox>
+              </motion.div>
+
+              {/* Large Lead Table */}
+              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="col-span-1 md:col-span-3">
+                <LeadTable leads={leads} loading={loading} />
+              </motion.div>
+
+              {/* ROI Calculator Box (Standalone tool) */}
+              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="col-span-1 md:col-span-3">
+                <div className="p-8 lg:p-12 glass-panel rounded-[40px] border border-white/5 bg-gradient-to-br from-amaura-surface to-transparent shadow-2xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                     <Sparkles className="w-24 h-24 text-[var(--color-primary)]" />
+                  </div>
+                  <div className="relative z-10">
+                    <div className="mb-10 text-left">
+                      <h3 className="text-3xl font-black font-display mb-2">ROI Intelligence</h3>
+                      <p className="text-amaura-text-muted text-sm max-w-lg">Advanced simulations for your home service revenue potential.</p>
+                    </div>
+                    <ROICalculator />
                   </div>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
-                  <Users className="w-6 h-6 text-[var(--color-amaura-text-muted)] group-hover:text-white transition-colors" />
-                </div>
-              </div>
-            </BentoBox>
-
-            {/* Stat 2 */}
-            <BentoBox title="Conversion Velocity">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-5xl font-display font-bold">{convRate}%</h4>
-                  <div className="flex items-center text-[var(--color-amaura-text-muted)] text-xs mt-1">
-                    <span>Targeting 15%</span>
-                  </div>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
-                  <Percent className="w-6 h-6 text-[var(--color-amaura-text-muted)] group-hover:text-white transition-colors" />
-                </div>
-              </div>
-            </BentoBox>
-
-            {/* Interactive Timeline */}
-            <BentoBox span="row-2" className="overflow-y-auto">
-              <ActivityFeed />
-            </BentoBox>
-
-            {/* Partner Perk */}
-            <BentoBox className="bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent border-[var(--color-primary)]/20">
-              <div className="h-full flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-[10px] font-black uppercase tracking-widest">
-                    <Zap className="w-3 h-3" /> Priority Tier
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-lg leading-tight">Partner Perks</h5>
-                    <p className="text-xs text-[var(--color-amaura-text-muted)]">Exclusive access to Tier 1 pricing.</p>
-                  </div>
-                </div>
-                <button 
-                  className="w-full py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110 active:scale-95"
-                  style={{ backgroundColor: 'var(--color-primary)' }}
-                >
-                  View Benefits
-                </button>
-              </div>
-            </BentoBox>
-
-            {/* Large Lead Table */}
-            <div className="col-span-1 md:col-span-3">
-              <LeadTable leads={leads} loading={loading} />
-            </div>
-
-            {/* ROI Calculator Box (Standalone tool) */}
-            <div className="col-span-1 md:col-span-3">
-              <div className="p-8 lg:p-12 glass-panel rounded-[40px] border border-white/5 bg-gradient-to-br from-amaura-surface to-transparent shadow-2xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                   <Sparkles className="w-24 h-24 text-[var(--color-primary)]" />
-                </div>
-                <div className="relative z-10">
-                  <div className="mb-10 text-left">
-                    <h3 className="text-3xl font-black font-display mb-2">ROI Intelligence</h3>
-                    <p className="text-amaura-text-muted text-sm max-w-lg">Advanced simulations for your home service revenue potential.</p>
-                  </div>
-                  <ROICalculator />
-                </div>
-              </div>
-            </div>
-          </BentoGrid>
+              </motion.div>
+            </BentoGrid>
+          </motion.div>
         </div>
       </main>
     </div>

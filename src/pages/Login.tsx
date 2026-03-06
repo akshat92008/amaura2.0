@@ -36,34 +36,49 @@ export const Login = () => {
 
   const [isSeeding, setIsSeeding] = useState(false);
   const handleSeed = async () => {
+    if (!email || !password) {
+      alert('Please enter an email and password in the fields above first. These will become your Super Admin credentials.');
+      return;
+    }
+
     setIsSeeding(true);
     try {
-      // Seed Master Admin (Profile)
-      // Note: This doesn't create the Auth user, but sets up the profile for when they sign up/in
-      await setDoc(doc(db, 'users', 'MASTER_ADMIN_UID_PLACEHOLDER'), {
-        email: 'master@amaura.studio',
+      const { auth } = await import('../lib/firebase');
+      const { createUserWithEmailAndPassword } = await import('firebase/auth');
+      
+      // 1. Create the Auth User
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+
+      // 2. Seed the Profile in Firestore using the NEW UID
+      await setDoc(doc(db, 'users', uid), {
+        email: email,
         role: 'admin',
         displayName: 'Master Admin',
         createdAt: Date.now()
       });
 
-      // Seed a sample tenant
-      await setDoc(doc(db, 'users', 'ROOFING_ADMIN_UID_PLACEHOLDER'), {
+      // 3. Seed a sample tenant (optional but helpful)
+      await setDoc(doc(db, 'users', 'SAMPLE_TENANT_ID'), {
         email: 'roofing@example.com',
         role: 'tenant_admin',
         tenantID: 'ROOF_001',
         displayName: 'Elite Shield Roofing',
         brandConfig: {
-          primary: '#3b82f6',
+          primary: '#4f46e5',
           logo: 'https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6'
         },
         createdAt: Date.now()
       });
 
-      alert('Firebase Backend Initialized Strategy! Profiles created.');
-    } catch (error) {
+      alert('Success! Your Super Admin account has been created and the database is initialized. You can now login normally.');
+    } catch (error: any) {
       console.error(error);
-      alert('Failed to seed. check console.');
+      if (error.code === 'auth/email-already-in-use') {
+        alert('This email is already registered in Firebase. Just use the login button or choose a different email to seed.');
+      } else {
+        alert('Initialization failed: ' + error.message);
+      }
     } finally {
       setIsSeeding(false);
     }

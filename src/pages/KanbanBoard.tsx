@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
 import { useLeads } from '../hooks/useLeads';
-import { Columns, GripVertical, Phone, Target } from 'lucide-react';
+import { Columns, GripVertical, Phone, Target, Sparkles } from 'lucide-react';
 import { Lead } from '../types';
 
 const columns = [

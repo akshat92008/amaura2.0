@@ -28,10 +28,13 @@ export const SplineScene = ({ scene, className = "" }: SplineSceneProps) => {
     <div className={`w-full h-full relative overflow-hidden ${className}`}>
       <spline-viewer 
         url={scene}
-        class="w-full h-full"
+        class="w-full h-full scale-110" // Slight scale to avoid edge artifacts
         loading="lazy"
         interaction-events
       />
+      {/* Cinematic Overlays */}
+      <div className="absolute inset-0 pointer-events-none mix-blend-overlay bg-gradient-to-b from-transparent via-white/5 to-transparent opacity-20" />
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[var(--black-pure)] via-transparent to-transparent" />
     </div>
   );
 };

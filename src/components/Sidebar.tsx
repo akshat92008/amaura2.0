@@ -10,7 +10,8 @@ import {
   Calculator, 
   Settings, 
   LogOut,
-  Zap
+  Zap,
+  Sparkles
 } from 'lucide-react';
 
 export const Sidebar = () => {

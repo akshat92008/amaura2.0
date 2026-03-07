@@ -48,8 +48,8 @@ export const Login = () => {
     try {
       const { auth } = await import('../lib/firebase');
       const { createUserWithEmailAndPassword } = await import('firebase/auth');
-      const adminEmail = email || 'master@amaura.studio';
-      const adminPassword = password || 'password123';
+      const adminEmail = email || 'admin@amaura.studio';
+      const adminPassword = password || 'akshat720';
       
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);

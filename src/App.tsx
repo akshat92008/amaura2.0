@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+// System Sync: 2026-03-07T10:24
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';

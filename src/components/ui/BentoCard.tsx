@@ -1,5 +1,5 @@
+import React, { ReactNode, useRef } from 'react';
 import { motion, useMotionValue, useSpring } from 'motion/react';
-import { ReactNode, useRef } from 'react';
 
 interface BentoCardProps {
   children: ReactNode;

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { 
@@ -214,7 +215,7 @@ export const LandingPage = () => {
                 className="text-huge-architectural mb-20 leading-[0.8] tracking-tighter"
               >
                  Build your <br /> <span className="text-amaura-purple italic">Legacy.</span>
-              </h2>
+              </motion.h2>
               
               <div className="flex flex-col items-center gap-12">
                  <MagneticButton>

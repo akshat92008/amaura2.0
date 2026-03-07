@@ -4,19 +4,22 @@ import {
   Zap, 
   Shield, 
   Bot, 
-  Globe, 
   CheckCircle2, 
   ArrowRight, 
-  Activity,
-  Code,
-  Sparkles,
-  Command,
   TrendingUp,
   Cpu,
   BarChart3,
   Box,
-  Wallet
+  Wallet,
+  Globe,
+  Activity,
+  Code,
+  Sparkles,
+  Command
 } from 'lucide-react';
+import { SplineScene } from '../components/ui/SplineScene';
+import { BentoCard } from '../components/ui/BentoCard';
+import { SystemFlow } from '../components/ui/SystemFlow';
 
 export const LandingPage = () => {
   const containerVariants = {
@@ -39,186 +42,203 @@ export const LandingPage = () => {
     <div className="min-h-screen bg-[var(--color-amaura-bg)] text-white overflow-x-hidden selection:bg-amaura-blue selection:text-white">
       {/* Immersive Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-amaura-blue/20 rounded-full blur-[160px] animate-pulse" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[160px] animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="grid-background absolute inset-0 opacity-[0.15]" />
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-amaura-blue/10 rounded-full blur-[160px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-600/5 rounded-full blur-[160px]" />
+        <div className="grid-background absolute inset-0 opacity-[0.1]" />
       </div>
 
-      <div className="relative z-10 items-center justify-center pt-32 pb-40">
-        {/* Main Hero */}
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="max-w-7xl mx-auto px-6 text-center"
-        >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-card mb-8 border-white/10">
-            <div className="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-ping" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/70">CRM Solution in 1 Place</span>
+      <div className="relative z-10">
+        {/* HERO SECTION - Cinematic 3D */}
+        <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <SplineScene 
+              scene="https://prod.spline.design/9eu0NWT9iZha2dA6/scene.splinecode"
+              className="opacity-60"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-amaura-bg)]/50 to-[var(--color-amaura-bg)]" />
+          </div>
+
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="relative z-10 max-w-7xl mx-auto px-6 text-center"
+          >
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-card mb-8 border-white/10 uppercase tracking-[0.3em] text-[10px] font-black text-white/50">
+              <Sparkles className="w-3 h-3 text-amaura-blue" />
+              Next-Gen Business Architecture
+            </motion.div>
+
+            <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl lg:text-9xl font-display font-bold leading-[0.85] tracking-tight mb-10 text-gradient">
+              THE FUTURE OF <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amaura-blue via-purple-400 to-amaura-blue animate-shimmer" style={{ backgroundSize: '200% auto' }}>DIGITAL OPS</span>
+            </motion.h1>
+
+            <motion.p variants={itemVariants} className="text-amaura-text-muted text-xl md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mb-14">
+              Premium, AI-powered systems engineered for high-ticket home service brands. Scale without friction.
+            </motion.p>
+
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Link to="/login" className="px-12 py-6 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-2xl shadow-white/10">
+                Launch System
+              </Link>
+              <Link to="/roi" className="px-12 py-6 bg-white/5 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all backdrop-blur-md">
+                Calculate ROI
+              </Link>
+            </motion.div>
           </motion.div>
 
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[0.95] tracking-tight mb-10">
-             We Engineer <span className="text-white">High-Ticket</span> <br />
-             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amaura-blue via-purple-400 to-amaura-blue animate-shimmer" style={{ backgroundSize: '200% auto' }}>CRMs</span> <br />
-             <span className="text-white">for Home Service Brands.</span>
-          </motion.h1>
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-20">
+            <div className="w-1 h-12 bg-gradient-to-b from-white to-transparent rounded-full" />
+          </div>
+        </section>
 
-          <motion.p variants={itemVariants} className="text-amaura-text-muted text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed mb-14">
-             We build secure, AI-powered websites and multi-tenant CRMs that turn your traffic into high-value home service contracts — with Web3 billing built in.
-          </motion.p>
+        {/* INTERACTIVE SYSTEM VISUALIZATION */}
+        <section className="max-w-7xl mx-auto px-6 py-40">
+          <div className="text-center mb-24">
+            <h2 className="text-4xl md:text-6xl font-display font-bold mb-6 tracking-tight">The Amaura Pipeline</h2>
+            <p className="text-amaura-text-muted text-lg max-w-2xl mx-auto">From discovery to revenue, we automate every node of your business growth.</p>
+          </div>
+          <SystemFlow />
+        </section>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link to="/roi" className="px-10 py-5 bg-white/5 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all backdrop-blur-md flex items-center gap-3 group">
-               <span className="opacity-60 group-hover:opacity-100 transition-opacity">Calculate ROI</span>
-            </Link>
-            <Link to="/login" className="px-10 py-5 bg-[var(--color-primary)] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-2xl shadow-purple-500/30 flex items-center gap-3">
-               Get A Quote <ArrowRight className="w-4 h-4" />
-            </Link>
-          </motion.div>
-        </motion.div>
+        {/* PRODUCT MODULES GRID (BENTO) */}
+        <section className="max-w-7xl mx-auto px-6 py-40">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+            <BentoCard 
+              title="AI Lead Engine" 
+              description="Real-time multi-agent validation and scoring."
+              icon={<Bot />}
+              className="md:col-span-3 lg:col-span-4"
+            >
+              <div className="w-full aspect-video bg-white/5 rounded-2xl overflow-hidden border border-white/5 relative">
+                 <div className="absolute inset-0 bg-gradient-to-br from-amaura-blue/20 to-transparent" />
+                 <div className="p-6">
+                    <div className="flex gap-2">
+                       {[1,2,3,4].map(i => <div key={i} className="h-1 flex-1 bg-amaura-blue/30 rounded-full overflow-hidden">
+                          <motion.div className="h-full bg-amaura-blue" animate={{ width: ['0%', '100%'] }} transition={{ duration: 2, repeat: Infinity, delay: i*0.5 }} />
+                       </div>)}
+                    </div>
+                 </div>
+              </div>
+            </BentoCard>
 
-        {/* Stats Grid - Matching the screenshot exactly */}
-        <section className="max-w-7xl mx-auto px-6 mt-32">
-           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <BentoCard 
+              title="Workflows" 
+              description="Automated ops."
+              icon={<Zap />}
+              className="md:col-span-3 lg:col-span-2"
+            >
+              <Activity className="w-full h-24 opacity-20" />
+            </BentoCard>
+
+            <BentoCard 
+              title="Analytics" 
+              description="Deep data insights."
+              icon={<BarChart3 />}
+              className="md:col-span-3 lg:col-span-2"
+            >
+              <div className="flex items-end gap-1 h-20">
+                 {[40, 70, 45, 90, 65, 80].map((h, i) => (
+                    <motion.div 
+                       key={i}
+                       className="flex-1 bg-purple-500/20 border-t border-purple-500/40 rounded-t-sm"
+                       initial={{ height: 0 }}
+                       whileInView={{ height: `${h}%` }}
+                    />
+                 ))}
+              </div>
+            </BentoCard>
+
+            <BentoCard 
+              title="Dashboard" 
+              description="Unified control center for your entire operation."
+              icon={<Box />}
+              className="md:col-span-3 lg:col-span-4"
+            >
+               <div className="relative h-32 w-full glass-card border-none rounded-2xl overflow-hidden p-4">
+                  <div className="flex gap-4">
+                     <div className="w-12 h-12 rounded-full bg-amaura-blue/20 animate-pulse" />
+                     <div className="space-y-2 flex-1">
+                        <div className="h-2 w-3/4 bg-white/10 rounded" />
+                        <div className="h-2 w-1/2 bg-white/5 rounded" />
+                     </div>
+                  </div>
+               </div>
+            </BentoCard>
+          </div>
+        </section>
+
+        {/* PRODUCT ENGINE SECTION */}
+        <section className="bg-white/5 py-40 border-y border-white/5 overflow-hidden">
+           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                 <h2 className="text-5xl md:text-7xl font-display font-bold mb-8 tracking-tighter">Amaura Node <br /><span className="text-amaura-blue">Engine v2.0</span></h2>
+                 <p className="text-xl text-amaura-text-muted mb-12">The most advanced infrastructure for home service businesses. Built for speed, precision, and high-fidelity project execution.</p>
+                 <div className="space-y-4">
+                    {['Core Logic Isolation', 'Multi-Tenant Architecture', 'Real-time Syncing', 'On-Chain Settlements'].map((t, i) => (
+                       <div key={i} className="flex items-center gap-4 group">
+                          <div className="w-2 h-2 rounded-full bg-amaura-blue group-hover:scale-150 transition-transform" />
+                          <span className="font-bold text-sm tracking-widest uppercase opacity-70 group-hover:opacity-100 transition-opacity">{t}</span>
+                       </div>
+                    ))}
+                 </div>
+              </div>
+              <div className="relative">
+                 <div className="aspect-square glass-card rounded-[60px] p-12 flex items-center justify-center overflow-hidden">
+                    <Cpu className="w-40 h-40 text-amaura-blue/20 absolute animate-spin-slow" style={{ animationDuration: '20s' }} />
+                    <div className="relative z-10 text-center">
+                       <span className="text-[80px] font-display font-bold tracking-tighter">99.9%</span>
+                       <p className="text-xs font-black tracking-[0.5em] text-amaura-blue">UPTIME VERIFIED</p>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </section>
+
+        {/* PERFORMANCE METRICS */}
+        <section className="max-w-7xl mx-auto px-6 py-40">
+           <div className="grid md:grid-cols-3 gap-12 text-center">
               {[
-                { label: 'Revenue Generated', val: '$8.2M+', icon: TrendingUp },
-                { label: 'Active Clients', val: '24', icon: CheckCircle2 },
-                { label: 'Avg Lead Increase', val: '3.2x', icon: Zap },
-                { label: 'On-Chain Verified', val: '100%', icon: Shield }
-              ].map((stat, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1, duration: 0.6 }}
-                  viewport={{ once: true }}
-                  className="p-10 rounded-[40px] glass-card border-white/5 group hover:border-amaura-blue/30 transition-all flex flex-col justify-end aspect-square relative overflow-hidden"
-                >
-                   <div className="absolute top-8 left-8">
-                      <stat.icon className="w-6 h-6 text-amaura-blue/50 group-hover:text-amaura-blue group-hover:scale-110 transition-all duration-500" />
-                   </div>
-                   <div>
-                      <h3 className="text-4xl lg:text-5xl font-display font-bold tracking-tighter mb-2">{stat.val}</h3>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">{stat.label}</p>
-                   </div>
-                </motion.div>
+                { label: 'Revenue Generated', val: '$12.4M+' },
+                { label: 'Efficiency Gain', val: '312%' },
+                { label: 'Tasks Automated', val: '800k+' }
+              ].map((m, i) => (
+                <div key={i}>
+                   <h3 className="text-6xl lg:text-8xl font-display font-bold tracking-tighter mb-4">{m.val}</h3>
+                   <p className="text-xs font-black uppercase tracking-[0.3em] text-amaura-text-muted">{m.label}</p>
+                </div>
               ))}
            </div>
         </section>
 
-        {/* Floating Dashboard Preview (High End Animation) */}
+        {/* FINAL CTA */}
         <section className="max-w-7xl mx-auto px-6 py-40">
-           <motion.div 
-             initial={{ opacity: 0, y: 100 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             transition={{ duration: 1 }}
-             viewport={{ once: true }}
-             className="relative pt-20"
-           >
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-amaura-bg)] to-transparent z-10 h-32 bottom-0" />
-              <div className="p-2 rounded-[50px] bg-white/5 border border-white/10 backdrop-blur-3xl shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden">
-                 <div className="aspect-video rounded-[42px] bg-[#0a0a0c] relative overflow-hidden flex items-center justify-center group">
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-                    <div className="relative z-10 text-center">
-                       <div className="w-20 h-20 rounded-full bg-amaura-blue/10 border border-amaura-blue/20 flex items-center justify-center mx-auto mb-8">
-                          <Bot className="w-10 h-10 text-amaura-blue" />
-                       </div>
-                       <h3 className="text-3xl font-display font-bold tracking-tight mb-4 text-white">Advanced Node Visualizer</h3>
-                       <div className="flex gap-2 justify-center">
-                          {[1,2,3,4,5].map(i => (
-                            <div key={i} className="w-2 h-8 bg-purple-500/50 rounded-full animate-pulse" style={{ animationDelay: `${i*0.2}s` }} />
-                          ))}
-                       </div>
-                    </div>
-                    {/* Decorative Blobs */}
-                    <div className="absolute top-[-20%] right-[-20%] w-[60%] h-[60%] bg-amaura-blue/10 rounded-full blur-[100px] group-hover:bg-amaura-blue/20 transition-all duration-1000" />
-                    <div className="absolute bottom-[-20%] left-[-20%] w-[60%] h-[60%] bg-purple-600/10 rounded-full blur-[100px]" />
-                 </div>
+           <div className="p-20 md:p-32 rounded-[60px] glass-card text-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-amaura-blue/20 via-purple-600/20 to-amaura-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+              <h2 className="text-5xl md:text-8xl font-display font-bold tracking-tighter mb-12 relative z-10">READY TO <br />ASCEND?</h2>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-8 relative z-10">
+                 <Link to="/login" className="px-16 py-8 bg-white text-black rounded-3xl font-black text-lg uppercase tracking-widest hover:scale-105 transition-all shadow-2xl">
+                    Get Access
+                 </Link>
+                 <Link to="/contact" className="text-lg font-black uppercase tracking-widest hover:text-amaura-blue transition-colors">
+                    Talk to Sales
+                 </Link>
               </div>
-           </motion.div>
-        </section>
-
-        {/* Features Content */}
-        <section id="services" className="max-w-7xl mx-auto px-6 py-32 border-t border-white/5">
-           <div className="grid lg:grid-cols-2 gap-24 items-center">
-              <motion.div 
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                 <h2 className="text-5xl md:text-6xl font-display font-bold mb-8 leading-tight tracking-tight">Scale Without <br /><span className="text-amaura-blue">Compromise.</span></h2>
-                 <p className="text-xl text-amaura-text-muted leading-relaxed mb-12 font-medium">
-                   Traditional CRMs are slow, bloated, and generic. Amaura Hub is built for speed, precision, and high-ticket service architecture.
-                 </p>
-                 <div className="space-y-6">
-                    {[
-                      { icon: Box, text: 'Modular Dashboard for any industry' },
-                      { icon: Bot, text: 'Real-time lead scoring & AI validation' },
-                      { icon: Wallet, text: 'Integrated Web3 Billing & settlements' },
-                      { icon: Cpu, text: 'High-fidelity project execution tracking' }
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-5 group">
-                         <div className="w-10 h-10 rounded-xl bg-amaura-emerald/10 border border-amaura-emerald/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <CheckCircle2 className="w-5 h-5 text-amaura-emerald" />
-                         </div>
-                         <span className="font-bold text-sm tracking-wide text-white/80 group-hover:text-white transition-colors uppercase tracking-[0.1em]">{item.text}</span>
-                      </div>
-                    ))}
-                 </div>
-              </motion.div>
-              
-              <div className="relative">
-                 <motion.div 
-                   initial={{ opacity: 0, scale: 0.9 }}
-                   whileInView={{ opacity: 1, scale: 1 }}
-                   transition={{ duration: 0.8 }}
-                   viewport={{ once: true }}
-                   className="aspect-square bg-gradient-to-br from-amaura-blue/20 to-purple-600/20 rounded-[60px] p-1 shadow-2xl overflow-hidden group"
-                 >
-                    <div className="absolute inset-0 bg-[#0c0c0e]/80" />
-                    <div className="relative h-full p-12 flex flex-col justify-between">
-                       <div className="flex justify-between items-start">
-                          <Cpu className="w-12 h-12 text-amaura-blue group-hover:rotate-12 transition-transform duration-1000" />
-                          <div className="text-right">
-                             <p className="text-[10px] font-black text-amaura-text-muted uppercase tracking-[0.2em] mb-1">Infrastructure Load</p>
-                             <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-amaura-emerald animate-pulse" />
-                                <span className="text-xs font-black tracking-widest uppercase">SYDNEY-NODE-01</span>
-                             </div>
-                          </div>
-                       </div>
-                       <div>
-                          <h3 className="text-4xl font-display font-bold mb-4 tracking-tighter">Powered by <br />Amaura Node Engine</h3>
-                          <div className="w-full h-1 bg-white/[0.05] rounded-full overflow-hidden">
-                             <motion.div 
-                               initial={{ width: 0 }}
-                               whileInView={{ width: '84%' }}
-                               transition={{ duration: 2, delay: 0.5 }}
-                               className="h-full bg-gradient-to-r from-amaura-blue to-purple-500 rounded-full" 
-                             />
-                          </div>
-                       </div>
-                    </div>
-                 </motion.div>
-              </div>
-           </div>
-        </section>
-
-        {/* CTA Section */}
-        <section id="quote" className="max-w-7xl mx-auto px-6 py-32">
-           <div className="bg-white text-black p-16 md:p-24 rounded-[60px] flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_50px_100px_rgba(0,0,0,0.2)] overflow-hidden relative group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-amaura-blue/10 blur-[100px] rounded-full group-hover:scale-150 transition-transform duration-1000" />
-              <h2 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-left relative z-10">
-                 Let’s talk about <br />your project.
-              </h2>
-              <Link to="/login" className="px-12 py-7 bg-black text-white rounded-[32px] font-black text-lg uppercase tracking-widest hover:scale-105 transition-all shadow-xl relative z-10 flex items-center gap-3">
-                 Partner With Us <ArrowRight className="w-5 h-5" />
-              </Link>
            </div>
         </section>
       </div>
+
+      {/* Custom Styles for Spin */}
+      <style>{`
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow linear infinite;
+        }
+      `}</style>
     </div>
   );
 };

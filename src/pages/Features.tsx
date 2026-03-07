@@ -196,11 +196,20 @@ export const Calendar = () => {
   }, [events]);
 
   const handleCreateEvent = async (e: React.FormEvent) => {
-// ...
+    e.preventDefault();
+    if (!newEvent.title || !newEvent.date) return;
+    
+    await addEvent(newEvent);
+    setIsModalOpen(false);
+    setNewEvent({ title: '', date: new Date().toISOString().split('T')[0], type: 'installation' });
   };
 
   const eventTypes = [
-// ...
+    { value: 'installation', label: 'Installation', color: 'bg-amaura-blue' },
+    { value: 'survey', label: 'Site Survey', color: 'bg-orange-500' },
+    { value: 'meeting', label: 'Consultation', color: 'bg-purple-500' },
+    { value: 'follow-up', label: 'Follow Up', color: 'bg-amaura-emerald' },
+    { value: 'urgent', label: 'Urgent', color: 'bg-red-500' }
   ];
   
   return (
@@ -208,7 +217,23 @@ export const Calendar = () => {
       <Sidebar />
       <main className="flex-grow ml-64 p-8 lg:p-12 overflow-y-auto relative">
         <header className="mb-16 flex justify-between items-end">
-          {/* ... header content ... */}
+          <div>
+            <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">Fulfillment Timeline</h1>
+            <div className="flex items-center gap-4">
+               <div className="px-3 py-1 rounded-lg bg-amaura-blue/10 border border-amaura-blue/20 text-[10px] font-black text-amaura-blue uppercase tracking-widest">
+                  {events.length} System Nodes
+               </div>
+               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">
+                 {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+               </p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-amaura-blue px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-amaura-blue/20"
+          >
+            <Plus className="w-4 h-4" /> Provision Milestone
+          </button>
         </header>
 
         <div className="grid grid-cols-7 gap-px border border-white/5 bg-white/5 rounded-[40px] overflow-hidden shadow-2xl">

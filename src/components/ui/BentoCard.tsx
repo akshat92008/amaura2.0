@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring } from 'motion/react';
-import { ReactNode, useRef, useEffect } from 'react';
+import { ReactNode, useRef } from 'react';
 
 interface BentoCardProps {
   children: ReactNode;
@@ -13,7 +13,6 @@ export const BentoCard = ({ children, className = "", title, description }: Bent
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Smooth spring for the gradient movement
   const springX = useSpring(mouseX, { stiffness: 500, damping: 50 });
   const springY = useSpring(mouseY, { stiffness: 500, damping: 50 });
 
@@ -31,30 +30,28 @@ export const BentoCard = ({ children, className = "", title, description }: Bent
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`relative overflow-hidden group premium-glass p-10 rounded-[40px] flex flex-col justify-between min-h-[400px] ${className}`}
+      className={`relative overflow-hidden group premium-glass p-8 rounded-[32px] flex flex-col justify-between min-h-[350px] ${className}`}
     >
-      {/* Dynamic Hover Gradient */}
+      {/* Dynamic Purple Hover Gradient */}
       <motion.div
-        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-1000"
+        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
         style={{
-          background: `radial-gradient(600px circle at var(--x) var(--y), rgba(255, 255, 255, 0.08), transparent 40%)`,
-          // Note: using dynamic vars for CSS
+          background: `radial-gradient(500px circle at var(--x) var(--y), rgba(94, 23, 235, 0.15), transparent 60%)`,
           ['--x' as any]: `${springX.get()}px`,
           ['--y' as any]: `${springY.get()}px`,
         } as any}
       />
 
       <div className="relative z-10">
-        <h3 className="text-3xl font-display font-black tracking-tighter mb-4 text-white uppercase italic">{title}</h3>
-        <p className="text-sm font-medium text-white/40 leading-relaxed uppercase tracking-wider max-w-[250px]">{description}</p>
+        <h3 className="text-2xl font-display font-black tracking-tight mb-2 text-white uppercase italic">{title}</h3>
+        <p className="text-[10px] font-black tracking-[0.2em] text-white/30 uppercase leading-relaxed max-w-[200px]">{description}</p>
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col justify-end mt-12">
+      <div className="relative z-10 flex-1 flex flex-col justify-end mt-8">
         {children}
       </div>
 
-      {/* Finishing Touch: Corner Glow */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-amaura-purple/5 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-amaura-purple/10 transition-colors duration-700" />
     </motion.div>
   );
 };

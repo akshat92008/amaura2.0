@@ -4,11 +4,11 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --color-amaura-blue: #3b82f6;
-  --color-amaura-emerald: #10b981;
-  --color-amaura-bg: #050505;
-  --color-amaura-text-muted: #888888;
-  --color-primary: #ffffff;
+  --color-amaura-purple: #5E17EB;
+  --color-amaura-purple-light: #8C52FF;
+  --color-amaura-bg: #000000;
+  --color-amaura-text-muted: #666666;
+  --color-primary: #5E17EB;
 }
 
 @layer base {
@@ -16,11 +16,15 @@
     /* Fluid Typography Scales */
     --font-heading: 'Inter', 'SF Pro Display', -apple-system, system-ui, sans-serif;
     
-    /* Premium Palette */
-    --black-pure: #050505;
-    --glass-background: rgba(10, 10, 10, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-glow: rgba(255, 255, 255, 0.03);
+    /* Brand Identity Palette */
+    --black-pure: #000000;
+    --neon-purple: #5E17EB;
+    --neon-purple-glow: rgba(94, 23, 235, 0.4);
+    
+    /* Enhanced Glassmorphism */
+    --glass-background: rgba(0, 0, 0, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-glow: rgba(94, 23, 235, 0.1);
   }
 
   body {
@@ -58,14 +62,8 @@ h4, .font-display {
   line-height: 0.8;
 }
 
-.glass-navbar {
-  background: rgba(3, 3, 3, 0.5);
-  backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
 .text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-amaura-blue via-purple-400 to-amaura-blue;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-amaura-purple via-purple-400 to-amaura-purple;
   background-size: 200% 100%;
 }
 
@@ -76,7 +74,7 @@ h4, .font-display {
   content: '';
   position: absolute;
   inset: -1px;
-  background: linear-gradient(45deg, var(--color-amaura-blue), var(--color-primary));
+  background: linear-gradient(45deg, var(--color-amaura-purple), var(--color-primary));
   filter: blur(8px);
   opacity: 0;
   transition: opacity 0.3s ease;

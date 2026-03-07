@@ -25,7 +25,7 @@ export const Sidebar = () => {
   const { brandConfig } = useTheme();
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
+    { icon: LayoutDashboard, label: 'Overview', path: user?.role === 'admin' ? '/admin' : '/dashboard' },
     { icon: Inbox, label: 'Unified Inbox', path: '/inbox' },
     { icon: CalendarIcon, label: 'Calendar', path: '/calendar' },
     { icon: FileText, label: 'Document Vault', path: '/documents' },

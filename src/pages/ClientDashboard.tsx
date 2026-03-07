@@ -18,9 +18,25 @@ import {
   Target,
   BarChart3
 } from 'lucide-react';
+import { useStore } from '../store';
+import { useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export const ClientDashboard = () => {
   const { leads } = useLeads();
+  const { clients, currentUser } = useStore();
+  const { user } = useAuth();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const urlTenantID = queryParams.get('tenantID');
+
+  // Determine which client 
+  const displayClient = user?.role === 'admin' && urlTenantID 
+    ? clients.find(c => c.id === urlTenantID) 
+    : currentUser;
+
+  const clientName = displayClient?.name || 'Your Business';
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -59,7 +75,7 @@ export const ClientDashboard = () => {
                  </div>
               </div>
               <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight">Executive Dashboard</h1>
-              <p className="text-amaura-text-muted mt-2 font-medium">Real-time revenue infrastructure for Apex Solar.</p>
+              <p className="text-amaura-text-muted mt-2 font-medium">Real-time revenue infrastructure for {clientName}.</p>
             </motion.div>
             
             <motion.div variants={itemVariants} className="flex items-center gap-4">

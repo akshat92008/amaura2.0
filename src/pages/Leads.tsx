@@ -6,8 +6,19 @@ import { useAuth } from '../hooks/useAuth';
 import { Sparkles, Download, Filter, Plus, Shield } from 'lucide-react';
 
 export const Leads = () => {
-  const { leads, loading } = useLeads();
+  const { leads } = useLeads();
+  const { clients, currentUser } = useStore();
   const { user } = useAuth();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const urlTenantID = queryParams.get('tenantID');
+
+  const displayClient = user?.role === 'admin' && urlTenantID 
+    ? clients.find(c => c.id === urlTenantID) 
+    : currentUser;
+
+  const clientName = displayClient?.name || '';
   const isAdmin = user?.role === 'admin';
 
   return (
@@ -32,7 +43,7 @@ export const Leads = () => {
                 </span>
               </div>
               <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">
-                {isAdmin ? 'Global Lead Monitoring' : 'Lead Management'}
+                {isAdmin ? `Monitoring: ${clientName || 'Global'}` : 'Lead Management'}
               </h1>
               <p className="text-amaura-text-muted">Live AI-scored leads mapped directly from your pipeline.</p>
             </div>

@@ -134,10 +134,10 @@ export const AdminDashboard = () => {
                  <thead>
                    <tr className="bg-white/[0.02]">
                      <th className="p-8 text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">Node Identity</th>
+                     <th className="p-8 text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">Tenant ID</th>
                      <th className="p-8 text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">Vertical</th>
                      <th className="p-8 text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">Revenue GMV</th>
-                     <th className="p-8 text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">Integrations</th>
-                     <th className="p-8 text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">Status</th>
+                     <th className="p-8 text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">Actions</th>
                    </tr>
                  </thead>
                  <tbody>
@@ -150,29 +150,27 @@ export const AdminDashboard = () => {
                             </div>
                             <div>
                                <p className="text-sm font-bold text-white mb-1">{client.name}</p>
-                               <p className="text-[10px] font-bold text-amaura-text-muted uppercase tracking-widest">Node ID: {client.id.toUpperCase()}</p>
+                               <p className="text-[9px] font-bold text-amaura-text-muted uppercase tracking-widest">{client.email}</p>
                             </div>
                          </div>
+                       </td>
+                       <td className="p-8">
+                         <code className="px-3 py-1.4 bg-white/5 border border-white/10 rounded-lg text-[10px] font-mono text-amaura-blue">
+                           {client.id}
+                         </code>
                        </td>
                        <td className="p-8 text-xs font-bold text-amaura-text-muted uppercase tracking-widest italic">{client.industry}</td>
                        <td className="p-8">
                          <p className="text-sm font-black text-white">${client.revenue.toLocaleString()}</p>
-                         <div className="w-20 h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
-                            <div className="h-full bg-amaura-emerald w-2/3" />
-                         </div>
-                       </td>
-                       <td className="p-8">
-                         <div className="flex -space-x-3">
-                            {[Bot, Globe, Database].map((Icon, i) => (
-                              <div key={i} className="w-8 h-8 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center shadow-lg group-hover:translate-y-[-2px] transition-transform" style={{ transitionDelay: `${i*100}ms` }}>
-                                 <Icon className="w-3.5 h-3.5 text-amaura-blue" />
-                              </div>
-                            ))}
-                         </div>
                        </td>
                        <td className="p-8">
                          <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amaura-emerald bg-amaura-emerald/10 px-3 py-1 rounded-full border border-amaura-emerald/20">Active</span>
+                            <a 
+                              href={`/dashboard?tenantID=${client.id}`}
+                              className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amaura-blue hover:text-white transition-all"
+                            >
+                              View Dashboard
+                            </a>
                             <ChevronRight className="w-4 h-4 text-amaura-text-muted ml-auto group-hover:translate-x-1 transition-transform" />
                          </div>
                        </td>

@@ -3,10 +3,23 @@ import { KanbanBoard as KanbanComponent } from '../components/crm/KanbanBoard';
 import { useLeads } from '../hooks/useLeads';
 import { useAuth } from '../hooks/useAuth';
 import { Columns, Shield } from 'lucide-react';
+import { useStore } from '../store';
+import { useLocation } from 'react-router-dom';
 
 export const KanbanBoard = () => {
   const { leads, loading } = useLeads();
+  const { clients, currentUser } = useStore();
   const { user } = useAuth();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const urlTenantID = queryParams.get('tenantID');
+
+  const displayClient = user?.role === 'admin' && urlTenantID 
+    ? clients.find(c => c.id === urlTenantID) 
+    : currentUser;
+
+  const clientName = displayClient?.name || '';
   const isAdmin = user?.role === 'admin';
 
   return (
@@ -29,7 +42,7 @@ export const KanbanBoard = () => {
                 </span>
               </div>
               <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">
-                {isAdmin ? 'Infrastructure Kanban' : 'Kanban Board'}
+                {isAdmin && clientName ? `Pipeline: ${clientName}` : isAdmin ? 'Infrastructure Kanban' : 'Kanban Board'}
               </h1>
               <p className="text-amaura-text-muted">Drag cards to move leads through the sales pipeline. Syncs instantly to the database.</p>
             </div>

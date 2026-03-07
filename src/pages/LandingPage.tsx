@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { 
   ArrowRight, 
   Sparkles, 
@@ -27,6 +27,38 @@ const FadeInView = ({ children, delay = 0, className = "" }: { children: React.R
   >
     {children}
   </motion.div>
+);
+
+const BackgroundGlow = () => (
+  <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <motion.div 
+      animate={{ 
+        scale: [1, 1.2, 1],
+        opacity: [0.3, 0.5, 0.3],
+        x: [0, 50, 0],
+        y: [0, -30, 0]
+      }}
+      transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+      className="absolute top-[-10%] left-[-10%] w-[80%] h-[80%] bg-amaura-purple/15 rounded-full blur-[160px]" 
+    />
+    <motion.div 
+      animate={{ 
+        scale: [1.2, 1, 1.2],
+        opacity: [0.2, 0.4, 0.2],
+        x: [0, -60, 0],
+        y: [0, 40, 0]
+      }}
+      transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+      className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-amaura-blue/10 rounded-full blur-[160px]" 
+    />
+    <motion.div 
+      animate={{ 
+        opacity: [0.1, 0.2, 0.1],
+      }}
+      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+      className="absolute top-[30%] left-[20%] w-[40%] h-[40%] bg-amaura-purple/10 rounded-full blur-[120px]" 
+    />
+  </div>
 );
 
 const TextAnimate = ({ text, className }: { text: string, className?: string }) => {
@@ -56,15 +88,33 @@ const TextAnimate = ({ text, className }: { text: string, className?: string }) 
 };
 
 export const LandingPage = () => {
+  const [visitors, setVisitors] = useState(5000);
+  const [ticketSize, setTicketSize] = useState(15000);
+  const [closeRate, setCloseRate] = useState(15);
+
+  const [lostMonthly, setLostMonthly] = useState(0);
+  const [annualUpside, setAnnualUpside] = useState(0);
+
+  useEffect(() => {
+    // Logic: Improved conversion from X to X+3% (e.g. 2% to 5%)
+    // Let's assume Amaura improves close rate by 5% baseline or multiplies it.
+    // For simplicity: (Visitors * (ImprovedRate - CurrentRate)) * TicketSize
+    const improvedRate = closeRate + 5;
+    const monthlyGain = (visitors * (5 / 100)) * (ticketSize * 0.1); // Simplified impact model for "Lost"
+    // Let's make it look realistic:
+    const currentRevenue = (visitors * (closeRate / 100) * ticketSize);
+    const potentialRevenue = (visitors * ((closeRate + 3) / 100) * ticketSize);
+    const diff = potentialRevenue - currentRevenue;
+    
+    setLostMonthly(diff);
+    setAnnualUpside(diff * 12);
+  }, [visitors, ticketSize, closeRate]);
+
   return (
     <div className="min-h-screen bg-[#030303] text-white selection:bg-amaura-purple selection:text-white relative font-sans">
       <div className="grid-background absolute inset-0 opacity-20 pointer-events-none" />
       
-      {/* Cinematic Overlays */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-amaura-purple/10 rounded-full blur-[160px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-amaura-blue/5 rounded-full blur-[160px]" />
-      </div>
+      <BackgroundGlow />
 
       <div className="relative z-10">
         {/* Navigation */}
@@ -292,26 +342,41 @@ export const LandingPage = () => {
 
            <div className="grid lg:grid-cols-5 gap-12 items-stretch max-w-6xl mx-auto">
               {/* Sliders Area */}
-              <FadeInView className="lg:col-span-3">
+              <FadeInView className="lg:col-span-3" key="sliders">
                 <div className="glass-card h-full !p-16">
                    <div className="space-y-16">
                      {[
-                       { label: 'Monthly Website Visitors', val: '5,000', min: '500', max: '50,000' },
-                       { label: 'Average Ticket Size ($)', val: '$15,000', min: '$1,000', max: '$100,000' },
-                       { label: 'Current Close Rate (%)', val: '15%', min: '5%', max: '50%' }
+                       { label: 'Monthly Website Visitors', val: visitors.toLocaleString(), min: 500, max: 50000, step: 500, current: visitors, set: setVisitors },
+                       { label: 'Average Ticket Size ($)', val: `$${ticketSize.toLocaleString()}`, min: 1000, max: 100000, step: 1000, current: ticketSize, set: setTicketSize },
+                       { label: 'Current Close Rate (%)', val: `${closeRate}%`, min: 1, max: 50, step: 1, current: closeRate, set: setCloseRate }
                      ].map((slider, i) => (
                        <div key={i}>
                          <div className="flex justify-between items-center mb-8">
                            <span className="text-[11px] font-black uppercase tracking-[0.3em] text-white/40">{slider.label}</span>
                            <span className="text-2xl font-display font-black text-amaura-purple">{slider.val}</span>
                          </div>
-                         <div className="relative h-2.5 bg-white/5 rounded-full">
-                            <div className="absolute top-0 left-0 h-full w-1/3 bg-amaura-purple rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)]" />
-                            <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-6 h-6 bg-white border-4 border-amaura-purple rounded-full shadow-2xl cursor-pointer hover:scale-125 transition-transform" />
+                         <div className="relative h-2.5 bg-white/5 rounded-full group cursor-pointer">
+                            <input 
+                              type="range"
+                              min={slider.min}
+                              max={slider.max}
+                              step={slider.step}
+                              value={slider.current}
+                              onChange={(e) => slider.set(Number(e.target.value))}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                            />
+                            <div 
+                              className="absolute top-0 left-0 h-full bg-amaura-purple rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-all" 
+                              style={{ width: `${((slider.current - slider.min) / (slider.max - slider.min)) * 100}%` }}
+                            />
+                            <div 
+                              className="absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white border-4 border-amaura-purple rounded-full shadow-2xl transition-all z-10 pointer-events-none"
+                              style={{ left: `${((slider.current - slider.min) / (slider.max - slider.min)) * 100}%`, transform: 'translate(-50%, -50%)' }}
+                            />
                          </div>
                          <div className="flex justify-between mt-5 text-[9px] font-black text-white/10 uppercase tracking-[0.4em]">
-                            <span>{slider.min}</span>
-                            <span>{slider.max}</span>
+                            <span>{slider.min.toLocaleString()}</span>
+                            <span>{slider.max.toLocaleString()}</span>
                          </div>
                        </div>
                      ))}
@@ -321,24 +386,24 @@ export const LandingPage = () => {
 
               {/* Results Area */}
               <div className="lg:col-span-2 flex flex-col gap-8">
-                 <FadeInView delay={0.1} className="flex-1">
+                 <FadeInView delay={0.1} className="flex-1" key="res-1">
                    <div className="h-full bg-gradient-to-br from-amaura-purple/20 via-transparent to-transparent border border-amaura-purple/20 rounded-[48px] p-16 flex flex-col justify-center relative overflow-hidden group">
                       <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-150 transition-transform duration-1000">
                         <TrendingUp className="w-32 h-32 text-amaura-purple" />
                       </div>
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-amaura-purple mb-6 relative z-10">Lost Monthly Revenue</p>
-                      <h3 className="text-5xl md:text-6xl font-display font-black tracking-tighter mb-6 relative z-10">$337,500</h3>
-                      <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black relative z-10">Incr. conversion 2% → 5% with Amaura</p>
+                      <h3 className="text-5xl md:text-6xl font-display font-black tracking-tighter mb-6 relative z-10">${Math.round(lostMonthly).toLocaleString()}</h3>
+                      <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black relative z-10">Incr. conversion {closeRate}% → {closeRate + 3}% with Amaura</p>
                    </div>
                  </FadeInView>
                  
-                 <FadeInView delay={0.2} className="flex-1">
+                 <FadeInView delay={0.2} className="flex-1" key="res-2">
                    <div className="h-full glass-card !p-16 flex flex-col justify-center border-amaura-emerald/20 group relative overflow-hidden">
                       <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-150 transition-transform duration-1000">
                         <ArrowRight className="w-32 h-32 text-amaura-emerald -rotate-45" />
                       </div>
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-amaura-emerald mb-6 relative z-10">Annual Upside Potential</p>
-                      <h3 className="text-5xl md:text-6xl font-display font-black tracking-tighter mb-6 relative z-10">$4,050,000</h3>
+                      <h3 className="text-5xl md:text-6xl font-display font-black tracking-tighter mb-6 relative z-10">${Math.round(annualUpside).toLocaleString()}</h3>
                       <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black relative z-10">Extra yield over 12 months pipeline</p>
                    </div>
                  </FadeInView>

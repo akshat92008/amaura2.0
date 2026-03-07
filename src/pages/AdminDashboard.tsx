@@ -22,7 +22,8 @@ import {
   X,
   Trash2,
   Copy,
-  Check
+  Check,
+  Key
 } from 'lucide-react';
 
 export const AdminDashboard = () => {

@@ -10,6 +10,7 @@ import { motion } from 'motion/react';
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [tenantID, setTenantID] = useState('');
   const { login, isLoading } = useAuth();
   const { setBrandConfig } = useTheme();
   const navigate = useNavigate();
@@ -53,15 +54,19 @@ export const Login = () => {
       
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
+        const isClient = !!tenantID;
+        
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           email: adminEmail,
-          role: 'admin',
-          displayName: 'Master Admin',
+          role: isClient ? 'tenant_admin' : 'admin',
+          tenantID: isClient ? tenantID : null,
+          displayName: isClient ? `Client Node: ${tenantID}` : 'Master Admin',
           createdAt: Date.now()
         });
-      } catch (e) {}
-
-      alert('Admin Initialized! Click Enter Hub.');
+        alert(isClient ? `Client Node ${tenantID} Initialized!` : 'Admin Initialized!');
+      } catch (e: any) {
+        alert('Account already exists or error: ' + e.message);
+      }
     } catch (error: any) {
       alert('Initialization failed: ' + error.message);
     } finally {
@@ -120,7 +125,9 @@ export const Login = () => {
               </div>
 
               <div className="space-y-3">
-                 <label className="text-[10px] font-black uppercase tracking-[0.3em] text-amaura-text-muted ml-2">Password</label>
+                 <div className="flex justify-between items-center ml-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-amaura-text-muted">Password</label>
+                 </div>
                  <div className="relative group">
                     <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-amaura-text-muted group-focus-within:text-amaura-blue transition-colors" />
                     <input 
@@ -132,6 +139,21 @@ export const Login = () => {
                        placeholder="••••••••"
                     />
                  </div>
+              </div>
+
+              {/* Optional Node Identity for initialization */}
+              <div className="pt-2">
+                 <div className="relative group opacity-60 focus-within:opacity-100 transition-opacity">
+                    <Database className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-amaura-text-muted group-focus-within:text-amaura-blue" />
+                    <input 
+                       type="text"
+                       value={tenantID}
+                       onChange={(e) => setTenantID(e.target.value)}
+                       className="w-full bg-white/[0.01] border border-dashed border-white/10 rounded-[20px] py-4 pl-14 pr-6 text-[10px] focus:outline-none focus:border-amaura-blue/30 transition-all font-bold tracking-widest uppercase"
+                       placeholder="Node Identity (Optional for Admin)"
+                    />
+                 </div>
+                 <p className="text-[8px] text-amaura-text-muted mt-2 ml-4 font-bold uppercase tracking-wider">Leave blank for Admin Initialization</p>
               </div>
 
               <button 

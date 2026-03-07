@@ -55,15 +55,37 @@ export const useDashboardFeatures = () => {
       createdAt: serverTimestamp(),
     });
 
+    // Intelligent Response Logic
+    let response = "I've analyzed your infrastructure. How else can I help you optimize today?";
+    const lowerText = text.toLowerCase();
+    
+    if (lowerText.includes('revenue') || lowerText.includes('money')) {
+      response = "Analyzing current revenue nodes... We're seeing a 14% uplift in projected GMV if we optimize the lead routing sequence.";
+    } else if (lowerText.includes('lead') || lowerText.includes('crm')) {
+      response = "The CRM pipeline is healthy. I recommend provisioning a new milestone for the 'Apex Solar' project to maintain velocity.";
+    } else if (lowerText.includes('calendar') || lowerText.includes('event')) {
+      response = "I can help you coordinate the fulfillment timeline. Would you like to provision a new milestone?";
+    }
+
     // Simulate AI response
     setTimeout(async () => {
       await addDoc(collection(db, 'messages'), {
-        text: `I've analyzed your request: "${text}". How else can I help you optimize your revenue engine today?`,
+        text: response,
         sender: 'ai',
         tenantID: user.tenantID || 'admin',
         createdAt: serverTimestamp(),
       });
-    }, 1000);
+    }, 1500);
+  };
+
+  // Calendar Logic
+  const addEvent = async (event: Omit<CalendarEvent, 'id' | 'tenantID'>) => {
+    if (!user) return;
+    await addDoc(collection(db, 'events'), {
+      ...event,
+      tenantID: user.tenantID || 'admin',
+      createdAt: serverTimestamp(),
+    });
   };
 
   useEffect(() => {
@@ -105,6 +127,7 @@ export const useDashboardFeatures = () => {
     messages, 
     sendAIMessage, 
     events, 
+    addEvent,
     documents 
   };
 };

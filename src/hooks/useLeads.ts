@@ -53,7 +53,7 @@ export const useLeads = (tenantFilter?: string) => {
     });
 
     return () => unsubscribe();
-  }, [user]);
+  }, [user, activeTenantID]);
 
   return { leads, loading };
 };

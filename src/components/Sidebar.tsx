@@ -1,3 +1,4 @@
+import React from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useClients } from '../hooks/useClients';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -75,25 +76,28 @@ export const Sidebar = () => {
       </div>
 
       <nav className="flex-grow px-4 mt-6 space-y-2">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => `
-              flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300
-              ${isActive 
-                ? 'text-white' 
-                : 'text-[var(--color-amaura-text-muted)] hover:bg-[var(--color-amaura-surface-hover)] hover:text-[var(--color-amaura-text)]'}
-            `}
-            style={({ isActive }) => isActive ? { 
-              backgroundColor: 'var(--color-primary)',
-              boxShadow: '0 0 20px -5px var(--color-primary)' 
-            } : {}}
-          >
-            <item.icon className="w-5 h-5" />
-            <span className="font-medium">{item.label}</span>
-          </NavLink>
-        ))}
+        {navItems.map((item) => {
+          const pathWithTenant = activeID ? `${item.path}?tenantID=${activeID}` : item.path;
+          return (
+            <NavLink
+              key={item.path}
+              to={pathWithTenant}
+              className={({ isActive }) => `
+                flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300
+                ${isActive 
+                  ? 'text-white' 
+                  : 'text-[var(--color-amaura-text-muted)] hover:bg-[var(--color-amaura-surface-hover)] hover:text-[var(--color-amaura-text)]'}
+              `}
+              style={({ isActive }) => isActive ? { 
+                backgroundColor: 'var(--color-primary)',
+                boxShadow: '0 0 20px -5px var(--color-primary)' 
+              } : {}}
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="font-medium">{item.label}</span>
+            </NavLink>
+          );
+        })}
       </nav>
 
       <div className="p-4 mt-auto space-y-2">

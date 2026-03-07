@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { 
   Sparkles, 
@@ -102,7 +102,7 @@ export const Copilot = () => {
                     ? 'bg-amaura-blue text-white rounded-tr-none' 
                     : 'bg-[#0a0a0c] border border-white/5 text-amaura-text-muted rounded-tl-none'
                 }`}>
-                  {m.sender === 'bot' && (
+                  {m.sender === 'ai' && (
                     <div className="mb-4 flex items-center justify-between border-b border-white/5 pb-4">
                        <div className="flex items-center gap-2 uppercase tracking-[0.2em] text-[10px] font-black">
                           <ShieldCheck className="w-3 h-3 text-amaura-emerald" /> Verified Logic
@@ -162,7 +162,28 @@ export const Copilot = () => {
 
 // --- CALENDAR ---
 export const Calendar = () => {
-  const { events } = useDashboardFeatures();
+  const { events, addEvent } = useDashboardFeatures();
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+  const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
+
+  const daysInMonth = getDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
+  const firstDay = (getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth()) + 6) % 7; // Adjust for Mon start
+
+  const handleAddMilestone = async () => {
+    const title = prompt("Enter milestone title:");
+    if (!title) return;
+    
+    const dateInput = prompt("Enter date (YYYY-MM-DD):", currentDate.toISOString().split('T')[0]);
+    if (!dateInput) return;
+
+    await addEvent({
+      title,
+      date: dateInput,
+      type: 'installation'
+    });
+  };
   
   return (
     <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
@@ -173,12 +194,17 @@ export const Calendar = () => {
             <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">Fulfillment Timeline</h1>
             <div className="flex items-center gap-4">
                <div className="px-3 py-1 rounded-lg bg-orange-500/10 border border-orange-500/20 text-[10px] font-black text-orange-500 uppercase tracking-widest">
-                  3 Critical Deadlines
+                  {events.length} Active Nodes
                </div>
-               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Integrated Operational Schedule</p>
+               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">
+                 {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+               </p>
             </div>
           </div>
-          <button className="bg-amaura-blue px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-amaura-blue/20">
+          <button 
+            onClick={handleAddMilestone}
+            className="bg-amaura-blue px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-amaura-blue/20"
+          >
             <Plus className="w-4 h-4" /> Provision Milestone
           </button>
         </header>
@@ -189,21 +215,32 @@ export const Calendar = () => {
                {day}
             </div>
           ))}
-          {Array.from({ length: 35 }).map((_, i) => (
-            <div key={i} className={`min-h-[140px] bg-[#030303] p-6 hover:bg-white/[0.02] transition-colors relative group border-r border-b border-white/5 ${i % 7 === 6 ? 'border-r-0' : ''}`}>
-               <span className={`text-xs font-black ${i === 14 ? 'text-amaura-blue' : 'text-amaura-text-muted'} group-hover:text-white`}>{(i % 31) + 1}</span>
-               {i === 14 && (
-                 <motion.div 
-                   initial={{ opacity: 0, scale: 0.9 }}
-                   animate={{ opacity: 1, scale: 1 }}
-                   className="mt-4 p-4 bg-amaura-blue/10 border-l-4 border-amaura-blue rounded-r-2xl cursor-pointer hover:bg-amaura-blue/20 transition-all"
-                 >
-                    <p className="text-[10px] font-black uppercase tracking-widest text-amaura-blue mb-1">Installation</p>
-                    <p className="text-xs font-bold truncate">Apex Solar - Phase 1</p>
-                 </motion.div>
-               )}
-            </div>
-          ))}
+          {Array.from({ length: 42 }).map((_, i) => {
+            const dayNum = i - firstDay + 1;
+            const isCurrentMonth = dayNum > 0 && dayNum <= daysInMonth;
+            const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+            const dayEvents = events.filter(e => e.date === dateStr);
+
+            return (
+              <div key={i} className={`min-h-[140px] bg-[#030303] p-6 hover:bg-white/[0.02] transition-colors relative group border-r border-b border-white/5 ${i % 7 === 6 ? 'border-r-0' : ''}`}>
+                 <span className={`text-xs font-black ${isCurrentMonth ? 'text-white/60' : 'text-white/5'} group-hover:text-amaura-blue`}>
+                   {isCurrentMonth ? dayNum : ''}
+                 </span>
+                 
+                 {dayEvents.map(event => (
+                   <motion.div 
+                     key={event.id}
+                     initial={{ opacity: 0, scale: 0.9 }}
+                     animate={{ opacity: 1, scale: 1 }}
+                     className="mt-4 p-4 bg-amaura-blue/10 border-l-4 border-amaura-blue rounded-r-2xl cursor-pointer hover:bg-amaura-blue/20 transition-all overflow-hidden"
+                   >
+                      <p className="text-[10px] font-black uppercase tracking-widest text-amaura-blue mb-1 truncate">{event.type}</p>
+                      <p className="text-xs font-bold truncate">{event.title}</p>
+                   </motion.div>
+                 ))}
+              </div>
+            );
+          })}
         </div>
       </main>
     </div>

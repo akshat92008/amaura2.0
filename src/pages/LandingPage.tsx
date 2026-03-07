@@ -65,6 +65,9 @@ const BackgroundGlow = () => (
       className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-amaura-purple/20 rounded-full blur-[150px]" 
     />
 
+    {/* Grid Overlay */}
+    <div className="grid-background absolute inset-0 opacity-20" />
+
     {/* Grain Overlay */}
     <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://res.cloudinary.com/dqr66zvtj/image/upload/v1675104443/noise_pfxszq.png')]" />
   </div>
@@ -117,8 +120,6 @@ export const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white selection:bg-amaura-purple selection:text-white relative font-sans">
-      <div className="grid-background absolute inset-0 opacity-20 pointer-events-none" />
-      
       <BackgroundGlow />
 
       <div className="relative z-10">

@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
-import { LeadTable } from '../components/crm/LeadTable';
+import { LeadList } from '../components/crm/LeadList';
 import { useLeads } from '../hooks/useLeads';
 import { Sparkles, Download, Filter, Plus } from 'lucide-react';
 
@@ -53,7 +53,7 @@ export const Leads = () => {
             animate={{ opacity: 1, y: 0 }}
             className="shadow-2xl overflow-hidden"
           >
-            <LeadTable leads={leads} loading={loading} />
+            <LeadList leads={leads} loading={loading} />
           </motion.div>
         </div>
       </main>

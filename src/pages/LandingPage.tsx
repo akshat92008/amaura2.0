@@ -17,12 +17,13 @@ import {
   Server
 } from 'lucide-react';
 
-const FadeInView = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
+const FadeInView = ({ children, delay = 0, className = "" }: { children: React.ReactNode, delay?: number, className?: string, key?: React.Key }) => (
   <motion.div
-    initial={{ opacity: 0, y: 30 }}
+    initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+    className={className}
   >
     {children}
   </motion.div>
@@ -32,17 +33,24 @@ const TextAnimate = ({ text, className }: { text: string, className?: string }) 
   const words = text.split(" ");
   return (
     <h1 className={className}>
-      {words.map((word, i) => (
-        <motion.span
-          key={i}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-block mr-[0.25em]"
-        >
-          {word}
-        </motion.span>
-      ))}
+      {words.map((word, i) => {
+        const isHighlight = word.toLowerCase().includes("crm") || word.toLowerCase().includes("high-ticket");
+        return (
+          <motion.span
+            key={i}
+            initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ 
+              duration: 0.8, 
+              delay: i * 0.1, 
+              ease: [0.22, 1, 0.36, 1] 
+            }}
+            className={`inline-block mr-[0.25em] ${isHighlight ? 'text-shimmer-purple' : ''}`}
+          >
+            {word}
+          </motion.span>
+        );
+      })}
     </h1>
   );
 };
@@ -60,43 +68,43 @@ export const LandingPage = () => {
 
       <div className="relative z-10">
         {/* Navigation */}
-        <header className="max-w-7xl mx-auto px-8 py-12 flex items-center justify-between">
+        <header className="max-w-7xl mx-auto px-8 py-8 flex items-center justify-between">
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -15 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-4 group cursor-pointer"
           >
-            <div className="w-12 h-12 bg-amaura-purple rounded-[18px] flex items-center justify-center shadow-[0_0_30px_rgba(139,92,246,0.5)] group-hover:scale-110 transition-transform duration-500">
-               <Sparkles className="w-7 h-7 text-white" />
+            <div className="w-10 h-10 bg-amaura-purple rounded-[14px] flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.3)] group-hover:scale-110 transition-transform duration-500">
+               <Sparkles className="w-6 h-6 text-white" />
             </div>
-            <span className="text-3xl font-display font-bold tracking-tighter">Amaura</span>
+            <span className="text-2xl font-display font-bold tracking-tighter">Amaura</span>
           </motion.div>
 
-          <nav className="hidden md:flex nav-pill">
-            <a href="#services" className="text-[11px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-all">Services</a>
-            <a href="#work" className="text-[11px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-all">Our Work</a>
-            <a href="#calculator" className="text-[11px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-all">Calculator</a>
+          <nav className="hidden md:flex bg-black/40 backdrop-blur-2xl border border-white/5 rounded-full px-6 py-3 items-center gap-6 shadow-xl">
+            <a href="#services" className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-white transition-all">Services</a>
+            <a href="#work" className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-white transition-all">Our Work</a>
+            <a href="#calculator" className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-white transition-all">Calculator</a>
           </nav>
 
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-            <Link to="/login" className="btn-premium-purple !px-8 !py-3 !text-xs !uppercase !tracking-[0.2em] !rounded-2xl">
+          <motion.div initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }}>
+            <Link to="/login" className="btn-premium-purple !px-6 !py-2.5 !text-[10px] !uppercase !tracking-[0.2em] !rounded-xl">
               Get Started
             </Link>
           </motion.div>
         </header>
 
         {/* Hero Section */}
-        <section className="max-w-6xl mx-auto px-8 section-padding text-center">
+        <section className="max-w-5xl mx-auto px-8 py-16 md:py-24 text-center">
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-12 hover:bg-white/10 transition-all cursor-pointer"
+            className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-[0.3em] text-white/50 mb-8 hover:bg-white/10 transition-all cursor-pointer"
           >
             <span className="text-amaura-purple animate-pulse">★</span> CRM Solution in 1 Place <ChevronRight className="w-3 h-3" />
           </motion.div>
 
           <TextAnimate 
-            className="text-6xl md:text-[7.5rem] font-display font-bold tracking-tighter mb-12 leading-[0.9] max-w-5xl mx-auto"
+            className="text-5xl md:text-[5rem] font-display font-bold tracking-tighter mb-8 leading-[1.0] max-w-4xl mx-auto"
             text="We Engineer High-Ticket CRMs for Home Service Brands."
           />
           
@@ -104,18 +112,18 @@ export const LandingPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 1 }}
-            className="flex justify-center mb-16"
+            className="flex justify-center mb-10"
           >
-             <div className="h-px w-24 bg-gradient-to-r from-transparent via-amaura-purple to-transparent" />
+             <div className="h-px w-20 bg-gradient-to-r from-transparent via-amaura-purple/40 to-transparent" />
           </motion.div>
 
           <motion.p 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 1 }}
-            className="text-xl md:text-2xl text-white/40 mb-16 max-w-3xl mx-auto font-medium leading-relaxed tracking-tight"
+            transition={{ delay: 1, duration: 0.8 }}
+            className="text-lg md:text-xl text-white/30 mb-10 max-w-2xl mx-auto font-medium leading-relaxed tracking-tight"
           >
-            We build secure, AI-powered websites and multi-tenant CRMs that turn your traffic into high-value home service contracts — with Web3 billing.
+            We build secure, AI-powered websites and multi-tenant CRMs that turn your traffic into high-value home service contracts.
           </motion.p>
 
           <motion.div 

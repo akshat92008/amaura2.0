@@ -20,6 +20,7 @@ import { motion, AnimatePresence } from 'motion/react';
 interface LeadListProps {
   leads: Lead[];
   loading: boolean;
+  isAdmin?: boolean;
 }
 
 const statusMap = {
@@ -30,7 +31,7 @@ const statusMap = {
   lost: { icon: XCircle, color: 'text-red-400', bg: 'bg-red-400/10', label: 'Lost' },
 };
 
-export const LeadList = ({ leads, loading }: LeadListProps) => {
+export const LeadList = ({ leads, loading, isAdmin }: LeadListProps) => {
   const [scoringId, setScoringId] = useState<string | null>(null);
 
   const handleScoreLead = async (lead: Lead) => {
@@ -76,6 +77,7 @@ export const LeadList = ({ leads, loading }: LeadListProps) => {
             <tr className="bg-[var(--color-amaura-surface)] text-[var(--color-amaura-text-muted)] text-[10px] uppercase tracking-widest leading-6">
               <th className="px-6 py-4 font-semibold">Contact Details</th>
               <th className="px-6 py-4 font-semibold">Status</th>
+              {isAdmin && <th className="px-6 py-4 font-semibold text-amaura-blue">Node Origin</th>}
               <th className="px-6 py-4 font-semibold">AI Score</th>
               <th className="px-6 py-4 font-semibold">Value</th>
               <th className="px-6 py-4 font-semibold text-right">Actions</th>
@@ -120,6 +122,16 @@ export const LeadList = ({ leads, loading }: LeadListProps) => {
                           {status.label}
                         </div>
                       </td>
+                      {isAdmin && (
+                        <td className="px-6 py-5">
+                          <div className="flex items-center gap-2">
+                             <div className="w-1.5 h-1.5 rounded-full bg-amaura-blue/40" />
+                             <span className="text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">
+                                {lead.tenantID || 'Global'}
+                             </span>
+                          </div>
+                        </td>
+                      )}
                       <td className="px-6 py-5">
                         {lead.score ? (
                           <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest border 

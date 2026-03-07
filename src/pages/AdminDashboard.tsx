@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
+import { useClients } from '../hooks/useClients';
 import { useStore } from '../store';
 import { 
   Plus, 
@@ -27,7 +28,7 @@ import {
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
-  const { clients, addClient, removeClient } = useStore();
+  const { clients, addClient, removeClient, loading } = useClients();
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isProvisioning, setIsProvisioning] = useState(false);
   const [newClient, setNewClient] = useState({ name: '', email: '', industry: 'Solar' as const });

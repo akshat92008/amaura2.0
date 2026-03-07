@@ -5,15 +5,15 @@ import { db } from '../lib/firebase';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
 
-export const useLeads = () => {
+export const useLeads = (tenantFilter?: string) => {
   const { user } = useAuth();
   const location = useLocation();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Extract tenantID from URL query params (for Admin "View as Client" mode)
+  // Extract tenantID from URL query params
   const queryParams = new URLSearchParams(location.search);
-  const urlTenantID = queryParams.get('tenantID');
+  const activeTenantID = tenantFilter || queryParams.get('tenantID');
 
   useEffect(() => {
     if (!user) {
@@ -29,8 +29,8 @@ export const useLeads = () => {
     let q;
     if (user.role === 'admin') {
       // Super Admin sees everything UNLESS a specific tenant is requested
-      if (urlTenantID) {
-        q = query(leadsRef, where('tenantID', '==', urlTenantID));
+      if (activeTenantID) {
+        q = query(leadsRef, where('tenantID', '==', activeTenantID));
       } else {
         q = query(leadsRef);
       }

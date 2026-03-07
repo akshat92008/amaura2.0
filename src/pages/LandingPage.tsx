@@ -1,213 +1,186 @@
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowRight, Calculator, ExternalLink, Sparkles, TrendingUp, Zap } from 'lucide-react';
-import { Button } from '../components/ui/Button';
+import { 
+  Zap, 
+  Shield, 
+  Bot, 
+  Globe, 
+  CheckCircle2, 
+  ArrowRight, 
+  Activity,
+  Code,
+  Sparkles,
+  Command
+} from 'lucide-react';
 
-export function LandingPage() {
-  const [visitors, setVisitors] = useState(5000);
-  const [ticketSize, setTicketSize] = useState(15000);
-  const [closeRate, setCloseRate] = useState(15);
-
-  const currentLeads = visitors * 0.02;
-  const currentRevenue = currentLeads * (closeRate / 100) * ticketSize;
-  const optimizedLeads = visitors * 0.05;
-  const optimizedRevenue = optimizedLeads * (closeRate / 100) * ticketSize;
-  const lostMonthly = optimizedRevenue - currentRevenue;
-  const annualUpside = lostMonthly * 12;
-
+export const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-amaura-bg text-white selection:bg-amaura-blue selection:text-white">
-      {/* Grid Background */}
-      <div className="fixed inset-0 grid-background pointer-events-none opacity-40 z-0" />
-      
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden z-10">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[var(--color-primary)]/20 blur-[120px] rounded-full pointer-events-none" />
-        
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="flex flex-col items-center">
-            <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amaura-surface border border-amaura-border text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted mb-10"
-            >
-              <Sparkles className="w-3 h-3 text-amaura-blue" />
-              <span>CRM Solution in 1 Place</span>
-              <ArrowRight className="w-3 h-3" />
-            </motion.div>
+    <div className="min-h-screen bg-[var(--color-amaura-bg)] text-white overflow-x-hidden selection:bg-amaura-blue selection:text-white">
+      {/* Immersive Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amaura-blue/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px]" />
+        <div className="grid-background absolute inset-0 opacity-20" />
+      </div>
 
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-6xl md:text-[100px] font-black tracking-tight mb-8 leading-[0.9] max-w-5xl"
-            >
-              We Engineer <span className="text-gradient animate-shimmer">High-Ticket CRMs</span> for Home Service Brands.
-            </motion.h1>
+      <div className="relative z-10">
+        {/* Navigation */}
+        <nav className="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center">
+          <div className="flex items-center gap-3 group list-none">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amaura-blue to-purple-600 flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
+               <Zap className="w-6 h-6 fill-current" />
+            </div>
+            <span className="font-display font-bold text-2xl tracking-tighter">Amaura <span className="text-amaura-blue">Hub</span></span>
+          </div>
+          <div className="hidden md:flex items-center gap-10 text-sm font-bold uppercase tracking-widest text-amaura-text-muted">
+            <a href="#features" className="hover:text-white transition-colors">Infrastructure</a>
+            <a href="#solutions" className="hover:text-white transition-colors">Case Studies</a>
+            <Link to="/login" className="px-8 py-3 rounded-full border border-white/10 hover:bg-white/5 transition-all">Portal Access</Link>
+          </div>
+        </nav>
 
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-lg md:text-xl text-amaura-text-muted max-w-2xl mb-12 leading-relaxed"
-            >
-              We build secure, AI-powered websites and multi-tenant CRMs that turn your traffic into high-value home service contracts — with Web3 billing built in.
-            </motion.p>
+        {/* Hero Section */}
+        <header className="max-w-7xl mx-auto px-6 pt-24 pb-32 text-center md:text-left grid lg:grid-cols-2 gap-20 items-center">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8">
+               <Sparkles className="w-4 h-4 text-amaura-blue" />
+               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amaura-blue">v4.0 Revenue Engine Active</span>
+            </div>
+            <h1 className="text-6xl md:text-8xl font-display font-bold leading-[1.05] tracking-tight mb-8">
+               High-Ticket <br />
+               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amaura-blue via-purple-400 to-white">AI Infrastructure</span>
+            </h1>
+            <p className="text-lg md:text-xl text-amaura-text-muted font-medium mb-12 max-w-xl leading-relaxed">
+               We build sovereign revenue machines for elite service providers. Modular AI agent systems that capture, close, and fulfill at global scale.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6">
+               <Link to="/login" className="px-10 py-5 bg-white text-black rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 transition-all flex items-center justify-center gap-3">
+                  Start Deployment <ArrowRight className="w-4 h-4" />
+               </Link>
+               <button className="px-10 py-5 bg-white/5 border border-white/10 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/10 transition-all">
+                  View Demo Node
+               </button>
+            </div>
+          </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24"
-            >
-              <Button variant="outline" className="px-10 py-7 rounded-2xl bg-white/5 border-white/10 hover:bg-white/10 transition-all gap-2 text-sm font-bold backdrop-blur-md">
-                <Calculator className="w-4 h-4" /> Calculate ROI
-              </Button>
-              <Button className="px-10 py-7 rounded-2xl bg-amaura-blue hover:scale-105 transition-all gap-2 text-sm font-bold button-glow shadow-2xl shadow-amaura-blue/20">
-                Get A Quote <ArrowRight className="w-4 h-4" />
-              </Button>
-            </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="relative hidden lg:block"
+          >
+             <div className="aspect-[4/3] bg-gradient-to-br from-amaura-blue/20 to-purple-600/20 rounded-[60px] border border-white/10 backdrop-blur-3xl p-1 shadow-2xl overflow-hidden group">
+                <div className="absolute inset-0 bg-[#0a0a0c]/80" />
+                <div className="relative h-full p-12 flex flex-col justify-between">
+                   <div className="flex justify-between items-start">
+                      <div className="w-16 h-16 rounded-2xl bg-amaura-blue flex items-center justify-center">
+                         <Bot className="w-8 h-8" />
+                      </div>
+                      <div className="text-right">
+                         <p className="text-[10px] font-black uppercase tracking-widest text-amaura-text-muted mb-1">System Health</p>
+                         <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-amaura-emerald animate-pulse" />
+                            <span className="font-mono text-sm tracking-widest">99.8% READY</span>
+                         </div>
+                      </div>
+                   </div>
+                   <div>
+                      <h3 className="text-4xl font-display font-bold mb-4 tracking-tighter">Automating <br />$12M+ Annual GMV</h3>
+                      <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                         <motion.div 
+                           initial={{ width: 0 }}
+                           whileInView={{ width: '84%' }}
+                           transition={{ duration: 2, delay: 0.5 }}
+                           className="h-full bg-gradient-to-r from-amaura-blue to-purple-500"
+                         />
+                      </div>
+                   </div>
+                </div>
+                {/* Decorative Elements */}
+                <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-amaura-blue/20 blur-[100px] rounded-full" />
+             </div>
+          </motion.div>
+        </header>
 
-            {/* Quick Stats Grid */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl"
-            >
+        {/* Stats Grid */}
+        <section className="max-w-7xl mx-auto px-6 pb-40">
+           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Revenue Generated', val: '$8.2M+' },
-                { label: 'Active Clients', val: '24' },
-                { label: 'Avg Lead Increase', val: '3.2x' },
-                { label: 'On-Chain Verified', val: '100%' },
-              ].map((s, i) => (
-                <div key={i} className="bg-[#0a0a0c]/80 border border-white/5 rounded-3xl p-8 text-left backdrop-blur-xl group hover:border-amaura-blue/30 transition-colors">
-                  <h4 className="text-4xl font-black mb-2 group-hover:text-amaura-blue transition-colors tracking-tighter">{s.val}</h4>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">{s.label}</p>
+                { label: 'Latency', val: '12ms', icon: Activity },
+                { label: 'Uptime', val: '100%', icon: Shield },
+                { label: 'Global Nodes', val: '432', icon: Globe },
+                { label: 'Success Rate', val: '94%', icon: CheckCircle2 }
+              ].map((stat, i) => (
+                <div key={i} className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 flex flex-col justify-between aspect-square group hover:bg-white/5 transition-all">
+                   <stat.icon className="w-6 h-6 text-amaura-blue group-hover:scale-110 transition-transform" />
+                   <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted mb-2">{stat.label}</p>
+                      <h3 className="text-4xl font-display font-bold tracking-tighter">{stat.val}</h3>
+                   </div>
                 </div>
               ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
+           </div>
+        </section>
 
-      {/* Projects Section */}
-      <section className="py-32 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
-            <div>
-              <h2 className="text-5xl md:text-8xl font-black tracking-tighter mb-4 leading-none">Proven Revenue</h2>
-              <h3 className="text-5xl md:text-8xl font-black tracking-tighter text-amaura-text-muted opacity-40 leading-none">Infrastructure.</h3>
-            </div>
-            <p className="max-w-xs text-sm text-amaura-text-muted leading-relaxed font-medium">
-              We don't build brochures. We engineer revenue machines for industry leaders.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {[
-              { 
-                tag: 'Roofing', 
-                name: 'Elite Shield Roofing', 
-                rev: { old: '120k', new: '350k' }, 
-                leads: '+145%', 
-                conv: '+8.5%',
-                color: 'amaura-blue' 
-              },
-              { 
-                tag: 'Solar', 
-                name: 'Apex Solar Solutions', 
-                rev: { old: '150k', new: '420k' }, 
-                leads: '+180%', 
-                conv: '+10.2%',
-                color: 'amaura-blue' 
-              }
-            ].map((p, i) => (
-              <div key={i} className="group relative bg-[#0a0a0c]/60 hover:bg-[#0a0a0c]/80 border border-white/5 p-12 rounded-[50px] transition-all duration-500 overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-amaura-blue/5 blur-[80px] rounded-full -mr-20 -mt-20 group-hover:bg-amaura-blue/10 transition-all" />
-                
-                <div className="flex justify-between items-start mb-16 relative z-10">
-                  <div className="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] bg-amaura-blue/10 text-amaura-blue border border-amaura-blue/20">
-                    {p.tag}
-                  </div>
-                  <ExternalLink className="w-5 h-5 text-amaura-text-muted opacity-40 group-hover:opacity-100 transition-opacity" />
-                </div>
-                
-                <h4 className="text-4xl font-black mb-12 tracking-tight relative z-10">{p.name}</h4>
-
-                <div className="grid grid-cols-2 gap-6 relative z-10">
-                  <div className="bg-white/5 border border-white/5 rounded-3xl p-8">
-                    <p className="text-[10px] uppercase font-bold text-amaura-text-muted mb-4 tracking-widest">Revenue Growth</p>
-                    <div className="flex items-center gap-2">
-                       <span className="text-xs text-amaura-text-muted line-through">${p.rev.old}</span>
-                       <ArrowRight className="w-3 h-3 text-amaura-text-muted" />
-                       <span className="text-2xl font-black tracking-tighter">${p.rev.new}</span>
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/5 rounded-3xl p-8">
-                    <p className="text-[10px] uppercase font-bold text-amaura-text-muted mb-4 tracking-widest">Lead Flow</p>
-                    <div className="flex items-center gap-1 text-[var(--color-amaura-emerald)]">
-                       <TrendingUp className="w-5 h-5" />
-                       <span className="text-2xl font-black tracking-tighter">{p.leads}</span>
-                    </div>
-                  </div>
-                </div>
+        {/* Features Preview */}
+        <section id="features" className="max-w-7xl mx-auto px-6 py-40 border-t border-white/5">
+           <div className="flex flex-col lg:flex-row gap-20">
+              <div className="lg:w-1/3">
+                 <h2 className="text-5xl font-display font-bold mb-8 leading-tight">Built for <br /><span className="text-amaura-blue">Unfair Advantage.</span></h2>
+                 <p className="text-amaura-text-muted font-medium leading-relaxed">Most agencies give you tools. We give you infrastructure. Our hub centralizes the entire lifecycle of a high-ticket transaction.</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <div className="lg:w-2/3 grid md:grid-cols-2 gap-6">
+                 {[
+                   { title: 'Neural CRM', desc: 'Real-time pipeline management with AI-scored lead validation.' },
+                   { title: 'Unified Inbox', desc: 'Centralized command for every message, SMS, and email flow.' },
+                   { title: 'Vision Logistics', desc: 'Visual project tracking from survey to final inspection.' },
+                   { title: 'Settlement Hub', desc: 'Decentralized invoicing with instant node wallet sync.' }
+                 ].map((feat, i) => (
+                   <div key={i} className="p-10 rounded-[40px] bg-white/[0.02] border border-white/5 hover:border-amaura-blue/30 transition-all cursor-default">
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-6">
+                        <Command className="w-5 h-5 text-amaura-blue" />
+                      </div>
+                      <h4 className="text-xl font-display font-bold mb-4">{feat.title}</h4>
+                      <p className="text-sm text-amaura-text-muted leading-relaxed font-medium">{feat.desc}</p>
+                   </div>
+                 ))}
+              </div>
+           </div>
+        </section>
 
-      {/* Hero-like CTA Section */}
-      <section className="py-40 px-6 relative z-10 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-amaura-blue/5 blur-[120px] rounded-full pointer-events-none" />
-        <div className="max-w-4xl mx-auto space-y-12 relative z-10">
-          <div className="flex items-center justify-center gap-2 mb-8">
-             <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-4xl animate-bounce">
-                👋
-             </div>
-          </div>
-          <h2 className="text-6xl md:text-8xl font-black tracking-tighter leading-none">
-            Let’s talk about your project
-          </h2>
-          <p className="text-amaura-text-muted text-lg max-w-xl mx-auto font-medium">
-            I am available for new projects 🔥<br />
-            We only take 3 new clients per quarter to ensure Tier 1 quality.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-            <Button variant="outline" className="px-10 py-7 rounded-2xl bg-white/5 border-white/10 hover:bg-white/10 transition-all gap-2 text-sm font-bold backdrop-blur-md">
-              <Zap className="w-4 h-4" /> Chat Now
-            </Button>
-            <Button className="px-10 py-7 rounded-2xl bg-amaura-blue hover:scale-105 transition-all gap-2 text-sm font-bold shadow-2xl shadow-amaura-blue/20">
-              Get A Quote <ArrowRight className="w-4 h-4" />
-            </Button>
-          </div>
-          <p className="text-[10px] font-bold text-amaura-text-muted/40 uppercase tracking-widest pt-8">
-            No setup fees. First milestone only. Cancel anytime.
-          </p>
-        </div>
-      </section>
+        {/* CTA */}
+        <section className="bg-white text-black py-32 px-6">
+           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-20">
+              <h2 className="text-5xl md:text-7xl font-display font-bold tracking-tighter max-w-3xl">
+                 Ready to provision <br />your revenue node?
+              </h2>
+              <Link to="/login" className="px-12 py-7 bg-black text-white rounded-[32px] font-black text-lg uppercase tracking-widest hover:scale-105 transition-all shadow-2xl">
+                 Access Portal
+              </Link>
+           </div>
+        </section>
 
-      {/* Footer Branding */}
-      <footer className="py-24 text-center relative z-10 border-t border-white/5">
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-amaura-blue flex items-center justify-center shadow-lg shadow-amaura-blue/20">
-            <Zap className="w-6 h-6 text-white" />
-          </div>
-          <span className="font-black text-3xl tracking-tighter">Amaura</span>
-        </div>
-        <div className="space-y-4">
-          <nav className="flex items-center justify-center gap-10 text-xs font-bold text-amaura-text-muted uppercase tracking-widest">
-            <a href="#" className="hover:text-white transition-colors">Home</a>
-            <a href="#" className="hover:text-white transition-colors">Services</a>
-            <a href="#" className="hover:text-white transition-colors">Stack</a>
-            <a href="#" className="hover:text-white transition-colors">Contact</a>
-          </nav>
-          <p className="text-amaura-text-muted/40 text-[10px] font-bold uppercase tracking-[0.2em] mt-8">
-            © 2024 Amaura Agency. All rights reserved.
-          </p>
-        </div>
-      </footer>
+        {/* Footer */}
+        <footer className="py-20 px-6 border-t border-white/5 bg-[#030303]">
+           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+              <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-lg bg-amaura-blue flex items-center justify-center">
+                    <Zap className="w-5 h-5 fill-current" />
+                 </div>
+                 <span className="font-display font-bold text-xl">Amaura</span>
+              </div>
+              <div className="flex gap-10 text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">
+                 <a href="#" className="hover:text-white transition-colors">Privacy</a>
+                 <a href="#" className="hover:text-white transition-colors">Terms</a>
+                 <a href="#" className="hover:text-white transition-colors">API Docs</a>
+              </div>
+              <p className="text-[10px] font-bold text-amaura-text-muted tracking-widest">© 2026 AMAURA INFRASTRUCTURE NODES</p>
+           </div>
+        </footer>
+      </div>
     </div>
   );
-}
+};

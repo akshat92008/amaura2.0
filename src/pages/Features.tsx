@@ -13,7 +13,12 @@ import {
   Download,
   Trash2,
   Wallet,
-  ArrowUpRight
+  ArrowUpRight,
+  ChevronRight,
+  Terminal,
+  Cpu,
+  ShieldCheck,
+  History
 } from 'lucide-react';
 import { useDashboardFeatures } from '../hooks/useDashboardFeatures';
 import { motion, AnimatePresence } from 'motion/react';
@@ -22,6 +27,7 @@ import { motion, AnimatePresence } from 'motion/react';
 export const Copilot = () => {
   const { messages, sendAIMessage } = useDashboardFeatures();
   const [input, setInput] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,65 +39,119 @@ export const Copilot = () => {
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
+    setIsThinking(true);
     sendAIMessage(input);
     setInput('');
+    // Simulate thinking finish after 2s if no real response logic
+    setTimeout(() => setIsThinking(false), 2000);
   };
 
   return (
-    <div className="flex min-h-screen bg-[#030303] text-white">
+    <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
       <Sidebar />
-      <main className="flex-grow ml-64 flex flex-col h-screen overflow-hidden">
-        <header className="p-8 border-b border-white/5 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-display font-bold flex items-center gap-3">
-              <Bot className="text-amaura-blue" />
-              AI Copilot
-            </h1>
-            <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-amaura-text-muted mt-1">Strategic Automation Engine</p>
+      <main className="flex-grow ml-64 flex flex-col h-screen overflow-hidden relative">
+        {/* Animated Neural Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full glow-mesh opacity-20" />
+        </div>
+
+        <header className="p-10 border-b border-white/5 flex items-center justify-between relative z-10 backdrop-blur-xl bg-black/20">
+          <div className="flex items-center gap-6">
+            <div className="w-14 h-14 rounded-[20px] bg-amaura-blue/10 border border-amaura-blue/20 flex items-center justify-center relative">
+               <Cpu className="w-7 h-7 text-amaura-blue" />
+               <div className="absolute -top-1 -right-1 w-3 h-3 bg-amaura-emerald rounded-full border-2 border-black animate-pulse" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-display font-bold tracking-tight">AI Command Center</h1>
+              <div className="flex items-center gap-3 mt-1">
+                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amaura-blue">Neural Model: Amaura-4S</span>
+                 <div className="w-1 h-1 bg-white/20 rounded-full" />
+                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amaura-emerald">Operational</span>
+              </div>
+            </div>
           </div>
-          <div className="px-4 py-2 rounded-full bg-amaura-blue/10 border border-amaura-blue/20 text-amaura-blue text-[10px] font-bold uppercase tracking-widest">
-            Neural Node Active
+          <div className="flex items-center gap-4">
+             <button className="p-3 rounded-xl hover:bg-white/5 transition-all text-amaura-text-muted"><History className="w-5 h-5" /></button>
+             <button className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex items-center gap-2">
+                <Terminal className="w-4 h-4" /> Node Logs
+             </button>
           </div>
         </header>
 
-        <div ref={scrollRef} className="flex-grow overflow-y-auto p-8 space-y-6 scroll-smooth">
+        <div ref={scrollRef} className="flex-grow overflow-y-auto p-10 space-y-10 relative z-10 custom-scrollbar">
           {messages.length === 0 && (
-            <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
-              <Bot className="w-16 h-16 mb-4" />
-              <p className="text-sm font-medium">System initialized. Awaiting strategy input...</p>
+            <div className="h-full flex flex-col items-center justify-center text-center">
+              <div className="w-32 h-32 rounded-full glow-mesh flex items-center justify-center mb-8 border border-amaura-blue/20">
+                 <Sparkles className="w-12 h-12 text-amaura-blue animate-pulse" />
+              </div>
+              <h2 className="text-2xl font-display font-bold mb-3 tracking-tight">Systems Visualizer Online</h2>
+              <p className="max-w-md text-sm text-amaura-text-muted font-medium leading-relaxed"> Amaura-4S is processing your infrastructure variables. Inquire about revenue optimization, lead scoring models, or project logistics. </p>
             </div>
           )}
-          {messages.map((m) => (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              key={m.id} 
-              className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`max-w-[70%] p-6 rounded-[30px] text-sm font-medium leading-relaxed ${
-                m.sender === 'user' 
-                  ? 'bg-amaura-blue text-white rounded-tr-none' 
-                  : 'bg-white/5 border border-white/5 text-amaura-text-muted rounded-tl-none'
-              }`}>
-                {m.text}
-              </div>
-            </motion.div>
-          ))}
+          
+          <AnimatePresence initial={false}>
+            {messages.map((m) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                key={m.id} 
+                className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`group relative max-w-[80%] lg:max-w-[60%] p-8 rounded-[32px] text-sm font-medium leading-relaxed shadow-2xl ${
+                  m.sender === 'user' 
+                    ? 'bg-amaura-blue text-white rounded-tr-none' 
+                    : 'bg-[#0a0a0c] border border-white/5 text-amaura-text-muted rounded-tl-none'
+                }`}>
+                  {m.sender === 'bot' && (
+                    <div className="mb-4 flex items-center justify-between border-b border-white/5 pb-4">
+                       <div className="flex items-center gap-2 uppercase tracking-[0.2em] text-[10px] font-black">
+                          <ShieldCheck className="w-3 h-3 text-amaura-emerald" /> Verified Logic
+                       </div>
+                    </div>
+                  )}
+                  {m.text}
+                </div>
+              </motion.div>
+            ))}
+            
+            {isThinking && (
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                className="flex justify-start"
+              >
+                <div className="bg-[#0a0a0c] border border-white/5 p-6 rounded-[24px] rounded-tl-none flex items-center gap-4">
+                   <div className="flex gap-1.5 focus-within:ring-0">
+                      {[1, 2, 3].map(i => (
+                        <motion.div 
+                          key={i}
+                          animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.2, 1] }}
+                          transition={{ repeat: Infinity, duration: 1, delay: i * 0.2 }}
+                          className="w-1.5 h-1.5 rounded-full bg-amaura-blue"
+                        />
+                      ))}
+                   </div>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">Analyzing Infrastructure...</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <form onSubmit={handleSend} className="p-8 bg-[#0a0a0c] border-t border-white/5">
-          <div className="max-w-4xl mx-auto relative">
+        <form onSubmit={handleSend} className="p-10 bg-[#060608] border-t border-white/5 relative z-10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+          <div className="max-w-5xl mx-auto relative group">
             <input 
               value={input}
               onChange={(e) => setInput(e.target.value)}
-               className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 pl-8 pr-20 text-sm focus:outline-none focus:border-amaura-blue/50 transition-all font-medium"
-               placeholder="Ask anything about your pipeline or automation..."
+              className="w-full bg-[#0a0a0c] border border-white/10 rounded-[28px] py-7 pl-10 pr-24 text-base focus:outline-none focus:border-amaura-blue/50 focus:ring-4 focus:ring-amaura-blue/5 transition-all font-medium placeholder:text-white/20"
+              placeholder="Deploy a command or request system analysis..."
             />
             <button 
               type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-xl bg-amaura-blue flex items-center justify-center hover:scale-105 transition-all shadow-lg"
+              disabled={!input.trim()}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-2xl bg-amaura-blue text-white flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all shadow-xl shadow-amaura-blue/20"
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-6 h-6" />
             </button>
           </div>
         </form>
@@ -105,28 +165,42 @@ export const Calendar = () => {
   const { events } = useDashboardFeatures();
   
   return (
-    <div className="flex min-h-screen bg-[#030303] text-white">
+    <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
       <Sidebar />
-      <main className="flex-grow ml-64 p-8 lg:p-12 overflow-y-auto">
-        <header className="mb-12 flex justify-between items-end">
+      <main className="flex-grow ml-64 p-8 lg:p-12 overflow-y-auto relative">
+        <header className="mb-16 flex justify-between items-end">
           <div>
-            <h1 className="text-4xl font-display font-bold mb-2">Unified Calendar</h1>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Operations & Fulfillment Schedule</p>
+            <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">Fulfillment Timeline</h1>
+            <div className="flex items-center gap-4">
+               <div className="px-3 py-1 rounded-lg bg-orange-500/10 border border-orange-500/20 text-[10px] font-black text-orange-500 uppercase tracking-widest">
+                  3 Critical Deadlines
+               </div>
+               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Integrated Operational Schedule</p>
+            </div>
           </div>
-          <button className="bg-amaura-blue px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:scale-105 transition-all">
-            <Plus className="w-4 h-4" /> New Event
+          <button className="bg-amaura-blue px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-amaura-blue/20">
+            <Plus className="w-4 h-4" /> Provision Milestone
           </button>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-          {/* Simple Grid Representation */}
-          {Array.from({ length: 31 }).map((_, i) => (
-            <div key={i} className="aspect-square bg-[#0a0a0c] border border-white/5 rounded-2xl p-4 hover:border-amaura-blue/30 transition-colors group relative">
-               <span className="text-xs font-bold text-amaura-text-muted group-hover:text-white">{i + 1}</span>
+        <div className="grid grid-cols-7 gap-px border border-white/5 bg-white/5 rounded-[40px] overflow-hidden shadow-2xl">
+          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+            <div key={day} className="bg-[#0a0a0c] p-6 text-[10px] font-black uppercase tracking-[0.3em] text-amaura-text-muted text-center border-b border-white/5">
+               {day}
+            </div>
+          ))}
+          {Array.from({ length: 35 }).map((_, i) => (
+            <div key={i} className={`min-h-[140px] bg-[#030303] p-6 hover:bg-white/[0.02] transition-colors relative group border-r border-b border-white/5 ${i % 7 === 6 ? 'border-r-0' : ''}`}>
+               <span className={`text-xs font-black ${i === 14 ? 'text-amaura-blue' : 'text-amaura-text-muted'} group-hover:text-white`}>{(i % 31) + 1}</span>
                {i === 14 && (
-                 <div className="absolute inset-x-2 bottom-2 p-2 bg-amaura-blue/20 border border-amaura-blue/30 rounded-lg text-[10px] font-bold text-amaura-blue truncate">
-                   Solar Install - Smith
-                 </div>
+                 <motion.div 
+                   initial={{ opacity: 0, scale: 0.9 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   className="mt-4 p-4 bg-amaura-blue/10 border-l-4 border-amaura-blue rounded-r-2xl cursor-pointer hover:bg-amaura-blue/20 transition-all"
+                 >
+                    <p className="text-[10px] font-black uppercase tracking-widest text-amaura-blue mb-1">Installation</p>
+                    <p className="text-xs font-bold truncate">Apex Solar - Phase 1</p>
+                 </motion.div>
                )}
             </div>
           ))}
@@ -141,58 +215,66 @@ export const Documents = () => {
   const { documents } = useDashboardFeatures();
   
   const mockDocs = documents.length > 0 ? documents : [
-    { name: 'ServiceAgreement_v1.pdf', type: 'contract', size: '2.4 MB', date: 'Oct 24, 2023' },
-    { name: 'SiteSurvey_Roof_01.jpg', type: 'photo', size: '4.8 MB', date: 'Oct 22, 2023' },
-    { name: 'Permit_Status_Approved.pdf', type: 'permit', size: '1.2 MB', date: 'Oct 15, 2023' },
+    { name: 'ServiceAgreement_Apex.pdf', type: 'Contract', size: '2.4 MB', date: 'Dec 14, 2025', owner: 'Legal Bot' },
+    { name: 'Survey_Asset_01.raw', type: 'Media', size: '124 MB', date: 'Dec 12, 2025', owner: 'Field Node' },
+    { name: 'Permit_Approval_V2.pdf', type: 'Official', size: '1.1 MB', date: 'Dec 08, 2025', owner: 'Gov Portal' },
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#030303] text-white">
+    <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
       <Sidebar />
       <main className="flex-grow ml-64 p-8 lg:p-12 overflow-y-auto">
-        <header className="mb-12 flex justify-between items-end">
+        <header className="mb-16 flex justify-between items-end">
           <div>
-            <h1 className="text-4xl font-display font-bold mb-2">Document Vault</h1>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Secure Asset Management</p>
+            <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">Asset Vault</h1>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">High-Fidelity Document Infrastructure</p>
           </div>
-          <button className="bg-white/5 border border-white/10 px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-white/10 transition-all">
-            <Plus className="w-4 h-4" /> Upload File
-          </button>
+          <div className="flex gap-4">
+             <button className="bg-white/5 border border-white/10 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all">
+                Create Folder
+             </button>
+             <button className="bg-amaura-blue px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-amaura-blue/20 flex items-center gap-2">
+                <Plus className="w-4 h-4" /> Upload Infrastructure
+             </button>
+          </div>
         </header>
 
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-[40px] overflow-hidden">
+        <div className="bg-[#0a0a0c] border border-white/5 rounded-[40px] overflow-hidden shadow-2xl">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-white/5">
-                <th className="p-8 text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted">Document Name</th>
-                <th className="p-8 text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted">Type</th>
-                <th className="p-8 text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted">Size</th>
-                <th className="p-8 text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted">Date</th>
-                <th className="p-8 text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted">Actions</th>
+              <tr className="border-b border-white/10">
+                <th className="p-10 text-[10px] font-black uppercase tracking-[0.2em] text-amaura-text-muted">Asset Name</th>
+                <th className="p-10 text-[10px] font-black uppercase tracking-[0.2em] text-amaura-text-muted">Identity</th>
+                <th className="p-10 text-[10px] font-black uppercase tracking-[0.2em] text-amaura-text-muted">Origin</th>
+                <th className="p-10 text-[10px] font-black uppercase tracking-[0.2em] text-amaura-text-muted">Weight</th>
+                <th className="p-10 text-[10px] font-black uppercase tracking-[0.2em] text-amaura-text-muted">Commands</th>
               </tr>
             </thead>
             <tbody>
               {mockDocs.map((doc, i) => (
-                <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
-                  <td className="p-8">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-amaura-blue" />
+                <tr key={i} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors group cursor-pointer">
+                  <td className="p-10">
+                    <div className="flex items-center gap-6">
+                      <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:border-amaura-blue/30 transition-all">
+                        <FileText className="w-6 h-6 text-amaura-blue" />
                       </div>
-                      <span className="text-sm font-bold">{doc.name}</span>
+                      <div>
+                         <span className="text-base font-bold text-white block mb-1">{doc.name}</span>
+                         <span className="text-[10px] font-bold text-amaura-text-muted uppercase tracking-widest">SHA-256 Verified</span>
+                      </div>
                     </div>
                   </td>
-                  <td className="p-8">
-                    <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted">
+                  <td className="p-10">
+                    <span className="px-4 py-1.5 rounded-full bg-amaura-blue/10 border border-amaura-blue/20 text-[10px] font-black uppercase tracking-widest text-amaura-blue">
                       {doc.type}
                     </span>
                   </td>
-                  <td className="p-8 text-sm text-amaura-text-muted font-medium">{doc.size}</td>
-                  <td className="p-8 text-sm text-amaura-text-muted font-medium">{'date' in doc ? doc.date : 'Just now'}</td>
-                  <td className="p-8">
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-2 hover:text-amaura-blue"><Download className="w-4 h-4" /></button>
-                      <button className="p-2 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                  <td className="p-10 text-sm font-bold text-amaura-text-muted">{'owner' in doc ? doc.owner : 'System'}</td>
+                  <td className="p-10 text-sm font-bold text-amaura-text-muted uppercase">{doc.size}</td>
+                  <td className="p-10">
+                    <div className="flex items-center gap-4 translate-x-10 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <button className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-amaura-blue/20 hover:text-amaura-blue"><Download className="w-4 h-4" /></button>
+                      <button className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-red-400/20 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -208,74 +290,89 @@ export const Documents = () => {
 // --- BILLING (WEB3) ---
 export const Billing = () => {
   return (
-    <div className="flex min-h-screen bg-[#030303] text-white">
+    <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
       <Sidebar />
-      <main className="flex-grow ml-64 p-8 lg:p-12 overflow-y-auto">
-        <header className="mb-12">
-          <h1 className="text-4xl font-display font-bold mb-2">Web3 Billing</h1>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Decentralized Revenue Settlement</p>
+      <main className="flex-grow ml-64 p-8 lg:p-12 overflow-y-auto relative">
+        <header className="mb-16">
+          <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">Settlement Infrastructure</h1>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Decentralized Node Revenue Sync</p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
-          <div className="lg:col-span-2 bg-gradient-to-br from-amaura-blue to-purple-600 rounded-[40px] p-12 relative overflow-hidden shadow-2xl shadow-amaura-blue/20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          <div className="lg:col-span-2 bg-gradient-to-br from-amaura-blue to-purple-800 rounded-[50px] p-16 relative overflow-hidden shadow-2xl shadow-amaura-blue/30 group">
+             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
              <div className="relative z-10 flex flex-col justify-between h-full">
                 <div>
-                   <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-60 mb-8">Node Wallet Balance</p>
-                   <div className="flex items-baseline gap-4">
-                      <h2 className="text-6xl font-display font-bold tracking-tighter">142.85 <span className="text-2xl">ETH</span></h2>
+                   <div className="flex items-center justify-between mb-12">
+                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">Global Node Balance</p>
+                      <ShieldCheck className="w-6 h-6 text-amaura-emerald" />
+                   </div>
+                   <div className="flex items-baseline gap-6">
+                      <h2 className="text-7xl lg:text-8xl font-display font-bold tracking-tighter">142.85 <span className="text-4xl opacity-50 font-sans tracking-normal">ETH</span></h2>
+                   </div>
+                   <div className="mt-6 flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-amaura-emerald animate-pulse" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Secure Settlement Node Connected</span>
                    </div>
                 </div>
-                <div className="flex mt-20 gap-4">
-                   <button className="flex-grow bg-white text-black py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 transition-all">Withdraw</button>
-                   <button className="px-8 bg-black/20 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-black/30 transition-all"><MoreVertical /></button>
+                <div className="flex mt-24 gap-6">
+                   <button className="flex-grow bg-white text-black py-6 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-2xl">Execute Withdrawal</button>
+                   <button className="px-10 bg-black/30 backdrop-blur-xl rounded-[28px] border border-white/10 hover:bg-black/50 transition-all flex items-center justify-center"><ArrowUpRight className="w-6 h-6" /></button>
                 </div>
              </div>
-             <Wallet className="absolute -right-10 -bottom-10 w-64 h-64 text-white/10 -rotate-12" />
+             <Wallet className="absolute -right-16 -bottom-16 w-80 h-80 text-white/10 group-hover:scale-110 transition-transform duration-1000" />
           </div>
 
-          <div className="bg-[#0a0a0c] border border-white/5 rounded-[40px] p-10 flex flex-col justify-between">
+          <div className="bg-[#0a0a0c] border border-white/5 rounded-[50px] p-12 flex flex-col justify-between shadow-2xl">
              <div>
-                <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted mb-8">Active Invoices</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-amaura-text-muted mb-10">Active Invoices</h3>
                 <div className="space-y-6">
                    {[
-                     { client: 'Elite Shield', amount: '$12,500', status: 'Pending' },
-                     { client: 'Apex Solar', amount: '$8,200', status: 'Sent' }
+                     { client: 'Elite Shield Roofing', amount: '4.50 ETH', status: 'Pending Verification', color: 'text-orange-400' },
+                     { client: 'Apex Solar Solutions', amount: '12.2 ETH', status: 'Confirmed', color: 'text-amaura-emerald' }
                    ].map((inv, i) => (
-                     <div key={i} className="flex justify-between items-center bg-white/5 rounded-2xl p-4 border border-white/5">
-                        <div className="flex flex-col">
-                           <span className="text-xs font-bold">{inv.client}</span>
-                           <span className="text-[10px] font-bold text-amaura-text-muted">{inv.status}</span>
+                     <div key={i} className="p-6 bg-white/[0.02] rounded-[30px] border border-white/5 hover:border-amaura-blue/30 transition-all group">
+                        <div className="flex justify-between items-start mb-4">
+                           <span className="text-[10px] font-black uppercase tracking-widest text-amaura-text-muted">#INV-882-{i}</span>
+                           <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md bg-white/5 ${inv.color}`}>{inv.status}</span>
                         </div>
-                        <span className="text-sm font-black">{inv.amount}</span>
+                        <h4 className="text-sm font-bold text-white mb-1">{inv.client}</h4>
+                        <p className="text-xl font-display font-bold tracking-tighter">{inv.amount}</p>
                      </div>
                    ))}
                 </div>
              </div>
-             <button className="w-full py-4 mt-10 rounded-2xl border border-white/10 text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-all">Create Invoice</button>
+             <button className="w-full py-5 mt-12 rounded-[24px] border border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white/10 transition-all">Generate New Request</button>
           </div>
         </div>
 
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-[40px] p-10">
-           <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted mb-8">Recent Settlement History</h3>
-           <div className="space-y-4">
+        <div className="bg-[#0a0a0c] border border-white/5 rounded-[50px] p-12 shadow-2xl">
+           <div className="flex items-center justify-between mb-12">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-amaura-text-muted">Settlement Node Logs</h3>
+              <button className="text-[10px] font-black uppercase tracking-widest text-amaura-blue hover:underline transition-all">Audit All Transactions</button>
+           </div>
+           <div className="space-y-8">
               {[
-                { type: 'Payment Recieved', from: '0x71...f2', amount: '+4.2 ETH', date: '2h ago' },
-                { type: 'Withdrawal', from: 'Node Wallet', amount: '-1.5 ETH', date: '1d ago' },
-                { type: 'Payment Recieved', from: '0x12...a4', amount: '+12.0 ETH', date: '3d ago' },
+                { type: 'Payment Sync', from: '0x71...f2', amount: '+4.200 ETH', date: '2h ago', status: 'COMPLETED' },
+                { type: 'Node Withdrawal', from: 'Amaura Master', amount: '-1.500 ETH', date: '1d ago', status: 'COMPLETED' },
+                { type: 'Contract Settlement', from: '0x12...a4', amount: '+12.000 ETH', date: '3d ago', status: 'COMPLETED' },
               ].map((tx, i) => (
-                <div key={i} className="flex items-center justify-between py-4 border-b border-white/5 last:border-0">
-                   <div className="flex items-center gap-4">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${tx.amount.startsWith('+') ? 'bg-amaura-emerald/10 text-amaura-emerald' : 'bg-red-400/10 text-red-400'}`}>
-                         <ArrowUpRight className="w-4 h-4" />
+                <div key={i} className="flex items-center justify-between group">
+                   <div className="flex items-center gap-6">
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-white/5 ${tx.amount.startsWith('+') ? 'bg-amaura-emerald/10 text-amaura-emerald' : 'bg-red-400/10 text-red-400'}`}>
+                         <ArrowUpRight className={`w-5 h-5 ${tx.amount.startsWith('-') ? 'rotate-180' : ''}`} />
                       </div>
                       <div>
-                         <p className="text-xs font-bold">{tx.type}</p>
-                         <p className="text-[10px] text-amaura-text-muted tracking-widest uppercase">{tx.from}</p>
+                         <p className="text-sm font-bold text-white mb-1 uppercase tracking-tight">{tx.type}</p>
+                         <p className="text-[10px] text-amaura-text-muted tracking-[0.2em] font-black uppercase">{tx.from}</p>
                       </div>
                    </div>
                    <div className="text-right">
-                      <p className={`text-sm font-black ${tx.amount.startsWith('+') ? 'text-amaura-emerald' : 'text-white'}`}>{tx.amount}</p>
-                      <p className="text-[10px] text-amaura-text-muted font-bold">{tx.date}</p>
+                      <p className={`text-lg font-display font-bold tracking-tighter ${tx.amount.startsWith('+') ? 'text-amaura-emerald' : 'text-white'}`}>{tx.amount}</p>
+                      <div className="flex items-center gap-2 justify-end mt-1">
+                         <div className="w-1 h-1 bg-amaura-emerald rounded-full" />
+                         <span className="text-[9px] text-amaura-text-muted font-black tracking-widest uppercase">{tx.status} — {tx.date}</span>
+                      </div>
                    </div>
                 </div>
               ))}
@@ -289,36 +386,63 @@ export const Billing = () => {
 // --- ANALYTICS ---
 export const Analytics = () => {
   return (
-    <div className="flex min-h-screen bg-[#030303] text-white">
+    <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
       <Sidebar />
-      <main className="flex-grow ml-64 p-8 lg:p-12 overflow-y-auto">
-        <header className="mb-12">
-          <h1 className="text-4xl font-display font-bold mb-2">Revenue Analytics</h1>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Core Performance Matrix</p>
+      <main className="flex-grow ml-64 p-8 lg:p-12 overflow-y-auto relative">
+        <header className="mb-16">
+          <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">Revenue Intelligence</h1>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Real-Time Core Performance Matrix</p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
            {[
-             { label: 'Avg Ticket Size', val: '$18,450', growth: '+12%' },
-             { label: 'Acquisition Cost', val: '$840', growth: '-5%' },
-             { label: 'LTV Projection', val: '$42,000', growth: '+24%' },
+             { label: 'Avg Ticket Value', val: '$18,450', growth: '+12.4%', color: 'text-amaura-emerald' },
+             { label: 'Acquisition Latency', val: '14.2m', growth: '-5.2%', color: 'text-amaura-emerald' },
+             { label: 'LTV Multiplier', val: '4.2x', growth: '+24.1%', color: 'text-purple-400' },
            ].map((s, i) => (
-             <div key={i} className="bg-[#0a0a0c] border border-white/5 rounded-[30px] p-8">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted mb-6">{s.label}</p>
+             <div key={i} className="bg-[#0a0a0c] border border-white/5 rounded-[40px] p-10 shadow-xl group hover:border-amaura-blue/30 transition-all">
+                <div className="flex items-center justify-between mb-10">
+                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-amaura-text-muted">{s.label}</p>
+                   <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center"><BarChart3 className="w-4 h-4 text-amaura-blue" /></div>
+                </div>
                 <div className="flex items-end justify-between">
-                   <h2 className="text-4xl font-display font-bold tracking-tighter">{s.val}</h2>
-                   <span className={`text-[10px] font-black px-2 py-1 rounded-md ${s.growth.startsWith('+') ? 'bg-amaura-emerald/10 text-amaura-emerald' : 'bg-red-400/10 text-red-400'}`}>
-                      {s.growth}
-                   </span>
+                   <h2 className="text-5xl font-display font-bold tracking-tighter">{s.val}</h2>
+                   <div className="text-right">
+                      <span className={`text-[10px] font-black flex items-center gap-1 uppercase ${s.color}`}>
+                         <ArrowUpRight className={`w-3 h-3 ${s.growth.startsWith('-') ? 'rotate-90' : ''}`} /> {s.growth}
+                      </span>
+                      <p className="text-[9px] font-bold text-amaura-text-muted uppercase tracking-widest mt-1">vs prev active</p>
+                   </div>
                 </div>
              </div>
            ))}
         </div>
 
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-[40px] p-10 h-[400px] flex items-center justify-center">
-           <div className="text-center opacity-40">
-              <BarChart3 className="w-16 h-16 mx-auto mb-4" />
-              <p className="text-sm font-medium uppercase tracking-[0.2em]">Live Data Streams Syncing...</p>
+        <div className="bg-[#0a0a0c] border border-white/5 rounded-[50px] p-20 flex flex-col items-center justify-center shadow-2xl relative overflow-hidden group">
+           <div className="absolute inset-0 glow-mesh opacity-10 group-hover:opacity-20 transition-opacity" />
+           <div className="text-center relative z-10">
+              <div className="w-24 h-24 rounded-full bg-amaura-blue/10 border border-amaura-blue/20 flex items-center justify-center mx-auto mb-10 animate-pulse">
+                 <BarChart3 className="w-10 h-10 text-amaura-blue" />
+              </div>
+              <h3 className="text-2xl font-display font-bold mb-4 tracking-tight">Streaming Data Matrix</h3>
+              <p className="max-w-md text-sm text-amaura-text-muted font-medium mb-10 leading-relaxed mx-auto uppercase tracking-widest text-[10px]"> Amaura Node V4 is currently synchronizing with global revenue streams. Neural visualization will initialize shortly. </p>
+              <div className="flex gap-4 justify-center">
+                 {[1, 2, 3, 4, 5].map(i => (
+                    <motion.div 
+                       key={i}
+                       animate={{ 
+                         height: [20, 40, 20],
+                         opacity: [0.3, 1, 0.3]
+                       }}
+                       transition={{ 
+                         repeat: Infinity, 
+                         duration: 0.8, 
+                         delay: i * 0.1 
+                       }}
+                       className="w-1.5 bg-amaura-blue rounded-full"
+                    />
+                 ))}
+              </div>
            </div>
         </div>
       </main>

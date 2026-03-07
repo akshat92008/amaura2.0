@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import { Client } from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
 
 export const handler: Handler = async (event, context) => {
   const headers = {
@@ -41,9 +41,9 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    const client = new Client({ apiKey });
+    const ai = new GoogleGenAI({ apiKey });
     
-    const response = await client.models.generateContent({
+    const response = await ai.models.generateContent({
       model: 'gemini-1.5-flash',
       contents: [...(history || []), { role: 'user', parts: [{ text: prompt }] }],
       systemInstruction: "You are Amaura AI (Version 4.5), the core intelligence of the Amaura revenue engine. Your goal is to help businesses optimize their infrastructure, lead routing, and project fulfillment. Be professional, concise, and focused on revenue growth. Use markdown for formatting."

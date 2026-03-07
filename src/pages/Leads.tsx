@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
-import { LeadTable } from '../components/LeadTable';
+import { LeadTable } from '../components/crm/LeadTable';
 import { useLeads } from '../hooks/useLeads';
 import { Sparkles, Download, Filter, Plus } from 'lucide-react';
 
@@ -51,7 +51,7 @@ export const Leads = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-panel border-white/5 shadow-2xl overflow-hidden"
+            className="shadow-2xl overflow-hidden"
           >
             <LeadTable leads={leads} loading={loading} />
           </motion.div>

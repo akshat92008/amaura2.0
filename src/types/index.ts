@@ -19,7 +19,9 @@ export type Lead = {
   name: string;
   email: string;
   phone: string;
-  status: 'new' | 'contacted' | 'won' | 'lost';
+  status: 'new' | 'contacted' | 'proposal' | 'won' | 'lost';
+  score?: 'Hot' | 'Warm' | 'Unscored';
+  value?: number;
   createdAt: number;
   source: string;
 };

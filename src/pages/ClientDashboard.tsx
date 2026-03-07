@@ -1,17 +1,24 @@
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
 import { BentoGrid, BentoBox } from '../components/BentoGrid';
 import { ROICalculator } from '../components/ROICalculator';
-import { LeadTable } from '../components/LeadTable';
+import { LeadTable } from '../components/crm/LeadTable';
 import { useLeads } from '../hooks/useLeads';
 import { useAuth } from '../hooks/useAuth';
+import { AnalyticsCards } from '../components/crm/AnalyticsCards';
 import { 
-  Users, 
-  DollarSign, 
-  Percent, 
+  Plus, 
+  Search, 
+  Filter, 
   ArrowUpRight,
   Sparkles,
-  Zap
+  Zap,
+  Activity,
+  Percent,
+  TrendingUp,
+  DollarSign,
+  Users
 } from 'lucide-react';
 import { LeadInsight } from '../components/LeadInsight';
 import { PerformanceChart } from '../components/PerformanceChart';
@@ -65,6 +72,8 @@ export const ClientDashboard = () => {
             </div>
           </div>
 
+          <AnalyticsCards leads={leads} />
+
           {/* Stats & Tools Grid */}
           <motion.div 
             initial="hidden"
@@ -94,7 +103,7 @@ export const ClientDashboard = () => {
                     const topLead = [...leads].sort((a,b) => b.createdAt - a.createdAt)[0];
                     const aiScore = topLead.phone ? 94 : 72;
                     const intent = aiScore > 85 ? 'positive' : 'neutral';
-                    const explanation = \`Identified strong intent pattern from recent \${topLead.source || 'Direct'} lead (\${topLead.name}). Recommend immediate follow up via \${topLead.phone ? 'Phone' : 'Email'}.\`;
+                    const explanation = `Identified strong intent pattern from recent ${topLead.source || 'Direct'} lead (${topLead.name}). Recommend immediate follow up via ${topLead.phone ? 'Phone' : 'Email'}.`;
                     
                     return (
                       <LeadInsight 

@@ -24,8 +24,16 @@ export const Sidebar = () => {
   const { user, logout } = useAuth();
   const { brandConfig } = useTheme();
 
-  const navItems = [
-    { icon: LayoutDashboard, label: 'Overview', path: user?.role === 'admin' ? '/admin' : '/dashboard' },
+  const adminNavItems = [
+    { icon: LayoutDashboard, label: 'Agency Overview', path: '/admin' },
+    { icon: Users, label: 'Lead Pipeline', path: '/kanban' },
+    { icon: BarChart3, label: 'Network Analytics', path: '/analytics' },
+    { icon: Inbox, label: 'Agency Inbox', path: '/inbox' },
+    { icon: FileText, label: 'Asset Vault', path: '/documents' },
+  ];
+
+  const clientNavItems = [
+    { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
     { icon: Inbox, label: 'Unified Inbox', path: '/inbox' },
     { icon: CalendarIcon, label: 'Calendar', path: '/calendar' },
     { icon: FileText, label: 'Document Vault', path: '/documents' },
@@ -35,6 +43,8 @@ export const Sidebar = () => {
     { icon: ClipboardList, label: 'Project Tracker', path: '/projects' },
     { icon: CreditCard, label: 'Billing', path: '/billing' },
   ];
+
+  const navItems = user?.role === 'admin' ? adminNavItems : clientNavItems;
 
   return (
     <aside className="w-64 h-screen glass-panel fixed left-0 top-0 flex flex-col border-r border-[var(--color-amaura-border)] z-20">

@@ -2,10 +2,13 @@ import { motion } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
 import { LeadList } from '../components/crm/LeadList';
 import { useLeads } from '../hooks/useLeads';
-import { Sparkles, Download, Filter, Plus } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { Sparkles, Download, Filter, Plus, Shield } from 'lucide-react';
 
 export const Leads = () => {
   const { leads, loading } = useLeads();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   return (
     <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
@@ -23,11 +26,13 @@ export const Leads = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <div className="flex items-center gap-2 text-[var(--color-primary)] mb-2">
-                <Sparkles className="w-4 h-4 fill-current" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">CRM Database</span>
+                {isAdmin ? <Shield className="w-4 h-4" /> : <Sparkles className="w-4 h-4 fill-current" />}
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                  {isAdmin ? 'Master Lead Registry' : 'CRM Database'}
+                </span>
               </div>
               <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">
-                Lead Management
+                {isAdmin ? 'Global Lead Monitoring' : 'Lead Management'}
               </h1>
               <p className="text-amaura-text-muted">Live AI-scored leads mapped directly from your pipeline.</p>
             </div>

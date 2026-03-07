@@ -1,10 +1,13 @@
 import { Sidebar } from '../components/Sidebar';
 import { KanbanBoard as KanbanComponent } from '../components/crm/KanbanBoard';
 import { useLeads } from '../hooks/useLeads';
-import { Columns } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { Columns, Shield } from 'lucide-react';
 
 export const KanbanBoard = () => {
   const { leads, loading } = useLeads();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   return (
     <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white overflow-hidden">
@@ -20,11 +23,13 @@ export const KanbanBoard = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 shrink-0">
             <div>
               <div className="flex items-center gap-2 text-[var(--color-primary)] mb-2">
-                <Columns className="w-4 h-4 fill-current" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Live Pipeline</span>
+                {isAdmin ? <Shield className="w-4 h-4" /> : <Columns className="w-4 h-4 fill-current" />}
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                  {isAdmin ? 'Agency Global Pipeline' : 'Live Pipeline'}
+                </span>
               </div>
               <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">
-                Kanban Board
+                {isAdmin ? 'Infrastructure Kanban' : 'Kanban Board'}
               </h1>
               <p className="text-amaura-text-muted">Drag cards to move leads through the sales pipeline. Syncs instantly to the database.</p>
             </div>

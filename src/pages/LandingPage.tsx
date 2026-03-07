@@ -48,14 +48,14 @@ export const LandingPage = () => {
       </div>
 
       <div className="relative z-10">
-        {/* HERO SECTION - Cinematic 3D */}
+        {/* HERO SECTION - Cinematic 3D Focus */}
         <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 z-0">
             <SplineScene 
               scene="https://prod.spline.design/9eu0NWT9iZha2dA6/scene.splinecode"
-              className="opacity-60"
+              className="opacity-100"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-amaura-bg)]/50 to-[var(--color-amaura-bg)]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-amaura-bg)]/20 to-[var(--color-amaura-bg)]" />
           </div>
 
           <motion.div 
@@ -64,28 +64,7 @@ export const LandingPage = () => {
             animate="visible"
             className="relative z-10 max-w-7xl mx-auto px-6 text-center"
           >
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-card mb-8 border-white/10 uppercase tracking-[0.3em] text-[10px] font-black text-white/50">
-              <Sparkles className="w-3 h-3 text-amaura-blue" />
-              Next-Gen Business Architecture
-            </motion.div>
-
-            <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl lg:text-9xl font-display font-bold leading-[0.85] tracking-tight mb-10 text-gradient">
-              THE FUTURE OF <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amaura-blue via-purple-400 to-amaura-blue animate-shimmer" style={{ backgroundSize: '200% auto' }}>DIGITAL OPS</span>
-            </motion.h1>
-
-            <motion.p variants={itemVariants} className="text-amaura-text-muted text-xl md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mb-14">
-              Premium, AI-powered systems engineered for high-ticket home service brands. Scale without friction.
-            </motion.p>
-
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Link to="/login" className="px-12 py-6 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-2xl shadow-white/10">
-                Launch System
-              </Link>
-              <Link to="/roi" className="px-12 py-6 bg-white/5 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all backdrop-blur-md">
-                Calculate ROI
-              </Link>
-            </motion.div>
+            {/* Text removed as per user request for pure visual focus */}
           </motion.div>
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-20">

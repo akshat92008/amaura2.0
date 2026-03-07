@@ -49,6 +49,18 @@ export const ClientDashboard = () => {
         />
         
         <div className="max-w-7xl mx-auto space-y-12 relative z-10">
+          {/* Revenue Performance Graph at the Top */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <BentoBox title="Revenue Performance" className="overflow-hidden">
+              <div className="h-[300px]">
+                <PerformanceChart leads={leads} />
+              </div>
+            </BentoBox>
+          </motion.div>
+
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -89,12 +101,7 @@ export const ClientDashboard = () => {
             }}
           >
             <BentoGrid>
-              {/* Main Growth Chart */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="col-span-1 md:col-span-2">
-                <BentoBox title="Revenue Performance" className="overflow-hidden h-full">
-                  <PerformanceChart leads={leads} />
-                </BentoBox>
-              </motion.div>
+              {/* AI Highlight */}
 
               {/* AI Highlight */}
               <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>

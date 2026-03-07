@@ -90,7 +90,7 @@ export const ClientDashboard = () => {
                      <span className="text-[10px] font-black text-amaura-text-muted uppercase tracking-widest">Active Pipeline</span>
                   </div>
                   <div className="flex-grow p-4">
-                     <LeadList />
+                     <LeadList leads={leads} loading={false} />
                   </div>
                </div>
             </motion.div>

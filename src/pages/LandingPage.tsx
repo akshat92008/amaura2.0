@@ -13,7 +13,9 @@ import {
   Command,
   TrendingUp,
   Cpu,
-  BarChart3
+  BarChart3,
+  Box,
+  Wallet
 } from 'lucide-react';
 
 export const LandingPage = () => {

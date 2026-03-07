@@ -34,32 +34,43 @@ export const handler: Handler = async (event, context) => {
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
+      console.error('❌ Gemini Error: API key missing from process.env');
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Gemini API key not configured' }),
+        body: JSON.stringify({ error: 'Gemini API key not configured on server' }),
       };
     }
 
+    console.log('🤖 Gemini: Initializing client with key:', apiKey.substring(0, 8) + '...');
     const ai = new GoogleGenAI({ apiKey });
     
-    const response = await ai.models.generateContent({
+    console.log('🤖 Gemini: Generating content for prompt:', prompt.substring(0, 50) + '...');
+    const result = await ai.models.generateContent({
       model: 'gemini-1.5-flash',
       contents: [...(history || []), { role: 'user', parts: [{ text: prompt }] }],
-      systemInstruction: "You are Amaura AI (Version 4.5), the core intelligence of the Amaura revenue engine. Your goal is to help businesses optimize their infrastructure, lead routing, and project fulfillment. Be professional, concise, and focused on revenue growth. Use markdown for formatting."
+      config: {
+        systemInstruction: "You are Amaura AI (Version 4.5), the core intelligence of the Amaura revenue engine. Your goal is to help businesses optimize their infrastructure, lead routing, and project fulfillment. Be professional, concise, and focused on revenue growth. Use markdown for formatting."
+      }
     });
+
+    const responseText = result.text || "I'm processing your request, but I couldn't generate a text response at this moment.";
+    console.log('🤖 Gemini: Response received successfully');
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ text: response.text() }),
+      body: JSON.stringify({ text: responseText }),
     };
   } catch (error: any) {
-    console.error('Gemini Function Error:', error);
+    console.error('❌ Gemini Function Error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message || 'Internal Server Error' }),
+      body: JSON.stringify({ 
+        error: error.message || 'Internal Server Error',
+        details: error.toString()
+      }),
     };
   }
 };

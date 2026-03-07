@@ -3,6 +3,7 @@ import { Sidebar } from '../components/Sidebar';
 import { AnalyticsCards } from '../components/crm/AnalyticsCards';
 import { LeadList } from '../components/crm/LeadList';
 import { useLeads } from '../hooks/useLeads';
+import { Loader2 } from 'lucide-react';
 import { 
   Plus, 
   ArrowUpRight, 
@@ -21,20 +22,20 @@ import {
 import { useStore } from '../store';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useClients } from '../hooks/useClients';
 
 export const ClientDashboard = () => {
-  const { leads } = useLeads();
-  const { clients, currentUser } = useStore();
+  const { leads, loading: leadsLoading } = useLeads();
+  const { clients, loading: clientsLoading } = useClients();
   const { user } = useAuth();
   const location = useLocation();
 
   const queryParams = new URLSearchParams(location.search);
   const urlTenantID = queryParams.get('tenantID');
+  const activeID = urlTenantID || user?.tenantID;
 
   // Determine which client 
-  const displayClient = user?.role === 'admin' && urlTenantID 
-    ? clients.find(c => c.id === urlTenantID) 
-    : currentUser;
+  const displayClient = clients.find(c => c.id === activeID);
 
   const clientName = displayClient?.name || 'Your Business';
 
@@ -74,8 +75,13 @@ export const ClientDashboard = () => {
                     <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amaura-emerald">Operational Matrix Sync</span>
                  </div>
               </div>
-              <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight">Executive Dashboard</h1>
-              <p className="text-amaura-text-muted mt-2 font-medium">Real-time revenue infrastructure for {clientName}.</p>
+              <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight flex items-center gap-4">
+                Executive Dashboard
+                {clientsLoading && <Loader2 className="w-6 h-6 animate-spin opacity-20" />}
+              </h1>
+              <p className="text-amaura-text-muted mt-2 font-medium">
+                Real-time revenue infrastructure for {clientsLoading ? '...' : clientName}.
+              </p>
             </motion.div>
             
             <motion.div variants={itemVariants} className="flex items-center gap-4">
@@ -106,7 +112,7 @@ export const ClientDashboard = () => {
                      <span className="text-[10px] font-black text-amaura-text-muted uppercase tracking-widest">Active Pipeline</span>
                   </div>
                   <div className="flex-grow p-4">
-                     <LeadList leads={leads} loading={false} />
+                     <LeadList leads={leads} loading={leadsLoading} />
                   </div>
                </div>
             </motion.div>

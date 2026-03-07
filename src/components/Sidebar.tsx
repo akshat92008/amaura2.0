@@ -1,5 +1,6 @@
-import { NavLink } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useClients } from '../hooks/useClients';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { 
   LayoutDashboard, 
@@ -22,7 +23,16 @@ import {
 
 export const Sidebar = () => {
   const { user, logout } = useAuth();
+  const { clients } = useClients();
   const { brandConfig } = useTheme();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const urlTenantID = queryParams.get('tenantID');
+  const activeID = urlTenantID || user?.tenantID;
+  const displayClient = clients.find(c => c.id === activeID);
+
+  const companyName = displayClient?.name || brandConfig.companyName;
 
   const adminNavItems = [
     { icon: LayoutDashboard, label: 'Agency Overview', path: '/admin' },
@@ -59,8 +69,8 @@ export const Sidebar = () => {
             <Zap className="w-6 h-6 fill-current" />
           </div>
         )}
-        <span className="font-display font-bold text-xl tracking-tight text-[var(--color-amaura-text)]">
-          {brandConfig.companyName}
+        <span className="font-display font-bold text-xl tracking-tight text-[var(--color-amaura-text)] truncate">
+          {companyName}
         </span>
       </div>
 

@@ -19,11 +19,15 @@ import {
   CheckCircle2,
   Cpu,
   Activity,
-  X
+  X,
+  Trash2,
+  Copy,
+  Check
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
-  const { clients, addClient } = useStore();
+  const { clients, addClient, removeClient } = useStore();
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isProvisioning, setIsProvisioning] = useState(false);
   const [newClient, setNewClient] = useState({ name: '', email: '', industry: 'Solar' as const });
   const [search, setSearch] = useState('');
@@ -40,7 +44,7 @@ export const AdminDashboard = () => {
 
   const handleProvision = (e: React.FormEvent) => {
     e.preventDefault();
-    const id = `c${clients.length + 1}`;
+    const id = `c${Date.now()}`; // Unique Timestamp ID
     addClient({
       id,
       ...newClient,
@@ -54,6 +58,23 @@ export const AdminDashboard = () => {
       ],
     });
     setIsProvisioning(false);
+    setNewClient({ name: '', email: '', industry: 'Solar' });
+  };
+
+  const handleCopyScript = (clientId: string) => {
+    const script = `/* Amaura Sync Engine */
+async function syncLead(formData) {
+  const HUB_API = "https://amaurastudio.netlify.app/.netlify/functions/inbound-lead";
+  const TENANT_ID = "${clientId}"; 
+  await fetch(HUB_API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tenantID: TENANT_ID, ...formData, status: "new" })
+  });
+}`;
+    navigator.clipboard.writeText(script);
+    setCopiedId(clientId);
+    setTimeout(() => setCopiedId(null), 2000);
   };
 
   return (
@@ -171,6 +192,24 @@ export const AdminDashboard = () => {
                             >
                               View Dashboard
                             </a>
+                            <button 
+                              onClick={() => handleCopyScript(client.id)}
+                              className="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all flex items-center gap-2 group/copy"
+                              title="Copy Sync Script"
+                            >
+                              {copiedId === client.id ? <Check className="w-3.5 h-3.5 text-amaura-emerald" /> : <Copy className="w-3.5 h-3.5 text-amaura-text-muted group-hover/copy:text-white" />}
+                            </button>
+                            <button 
+                              onClick={() => {
+                                if(confirm('Are you sure you want to decommission this node?')) {
+                                  removeClient(client.id);
+                                }
+                              }}
+                              className="p-2 bg-red-500/5 border border-red-500/10 rounded-xl hover:bg-red-500/20 transition-all group/trash"
+                              title="Delete Node"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 text-red-500/40 group-hover/trash:text-red-500" />
+                            </button>
                             <ChevronRight className="w-4 h-4 text-amaura-text-muted ml-auto group-hover:translate-x-1 transition-transform" />
                          </div>
                        </td>

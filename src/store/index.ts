@@ -32,6 +32,7 @@ interface AppState {
   login: (role: UserRole, clientId?: string) => void;
   logout: () => void;
   addClient: (client: ClientData) => void;
+  removeClient: (clientId: string) => void;
   payMilestone: (clientId: string, milestoneId: string, txHash: string) => void;
   forceUnlockMilestone: (clientId: string, milestoneId: string) => void;
 }
@@ -88,6 +89,10 @@ export const useStore = create<AppState>()(
       
       addClient: (client) => set((state) => ({
         clients: [...state.clients, client]
+      })),
+      
+      removeClient: (clientId) => set((state) => ({
+        clients: state.clients.filter(c => c.id !== clientId)
       })),
       
       payMilestone: (clientId, milestoneId, txHash) => set((state) => {

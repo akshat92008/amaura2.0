@@ -11,7 +11,13 @@ import {
   Settings, 
   LogOut,
   Zap,
-  Sparkles
+  Sparkles,
+  Bot,
+  Calendar as CalendarIcon,
+  FileText,
+  BarChart3,
+  CreditCard,
+  ClipboardList
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -21,13 +27,13 @@ export const Sidebar = () => {
   const navItems = [
     { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
     { icon: Inbox, label: 'Unified Inbox', path: '/inbox' },
-    { icon: Columns, label: 'Calendar', path: '/calendar' },
-    { icon: FolderKanban, label: 'Document Vault', path: '/documents' },
-    { icon: Zap, label: 'Analytics', path: '/analytics' },
-    { icon: Sparkles, label: 'AI Copilot', path: '/copilot' },
+    { icon: CalendarIcon, label: 'Calendar', path: '/calendar' },
+    { icon: FileText, label: 'Document Vault', path: '/documents' },
+    { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+    { icon: Bot, label: 'AI Copilot', path: '/copilot' },
     { icon: Users, label: 'Lead Pipeline', path: '/kanban' },
-    { icon: LayoutDashboard, label: 'Project Tracker', path: '/projects' },
-    { icon: Calculator, label: 'Billing', path: '/billing' },
+    { icon: ClipboardList, label: 'Project Tracker', path: '/projects' },
+    { icon: CreditCard, label: 'Billing', path: '/billing' },
   ];
 
   return (

@@ -17,7 +17,7 @@ import { db } from '../../lib/firebase';
 import { scoreLead, formatCurrency } from '../../lib/crmUtils';
 import { motion, AnimatePresence } from 'motion/react';
 
-interface LeadTableProps {
+interface LeadListProps {
   leads: Lead[];
   loading: boolean;
 }
@@ -30,7 +30,7 @@ const statusMap = {
   lost: { icon: XCircle, color: 'text-red-400', bg: 'bg-red-400/10', label: 'Lost' },
 };
 
-export const LeadTable = ({ leads, loading }: LeadTableProps) => {
+export const LeadList = ({ leads, loading }: LeadListProps) => {
   const [scoringId, setScoringId] = useState<string | null>(null);
 
   const handleScoreLead = async (lead: Lead) => {

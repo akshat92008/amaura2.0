@@ -12,25 +12,18 @@ export const AnalyticsCards = ({ leads }: AnalyticsCardsProps) => {
 
   const cards = [
     {
-      label: 'Pipeline Value',
+      label: 'Total Pipeline Value',
       value: formatCurrency(stats.pipelineValue),
       icon: DollarSign,
       color: 'var(--color-primary)',
-      description: 'Total value of all leads'
-    },
-    {
-      label: 'Projected Revenue',
-      value: formatCurrency(stats.projectedRevenue),
-      icon: TrendingUp,
-      color: 'var(--color-amaura-emerald)',
-      description: 'Value of closed won leads'
+      change: '+12.5% vs last month'
     },
     {
       label: 'Active Leads',
       value: stats.activeLeads.toString(),
       icon: Users,
-      color: 'var(--color-amaura-blue)',
-      description: 'Leads currently in pipeline'
+      color: '#10b981',
+      change: '0 total in pipeline'
     },
     {
       label: 'Conversion Rate',
@@ -38,40 +31,46 @@ export const AnalyticsCards = ({ leads }: AnalyticsCardsProps) => {
         ? `${((leads.filter(l => l.status === 'won').length / leads.length) * 100).toFixed(1)}%`
         : '0%',
       icon: Activity,
+      color: '#8b5cf6',
+      change: '+2.1% improvement'
+    },
+    {
+      label: 'Phases Complete',
+      value: '0/3',
+      icon: TrendingUp,
       color: '#f59e0b',
-      description: 'Win rate performance'
+      change: '0% delivered'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map((card, index) => (
         <motion.div
           key={card.label}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="glass-panel p-6 border-white/5 bg-[#121214]/40 hover:bg-[#121214]/60 transition-all group"
+          className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 relative overflow-hidden group"
         >
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between items-start mb-6">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">
+              {card.label}
+            </span>
             <div 
-              className="p-3 rounded-2xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform"
+              className="p-1.5 rounded-lg bg-white/5 border border-white/10"
               style={{ color: card.color }}
             >
-              <card.icon className="w-6 h-6" />
-            </div>
-            <div className="text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted">
-              Live updates
+              <card.icon className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <h3 className="text-amaura-text-muted text-sm font-medium mb-1">{card.label}</h3>
-            <div className="text-3xl font-display font-bold text-white tracking-tight">
+            <div className="text-4xl font-display font-bold text-white tracking-tight mb-2">
               {card.value}
             </div>
-            <p className="text-[10px] text-amaura-text-muted mt-2 italic">
-              {card.description}
-            </p>
+            <div className="text-[10px] font-bold text-amaura-text-muted/60 uppercase tracking-widest leading-none">
+              {card.change}
+            </div>
           </div>
         </motion.div>
       ))}

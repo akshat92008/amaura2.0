@@ -18,12 +18,15 @@ export const Sidebar = () => {
   const { brandConfig } = useTheme();
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-    { icon: Users, label: 'Leads', path: '/leads' },
-    { icon: Columns, label: 'Kanban Board', path: '/kanban' },
-    { icon: FolderKanban, label: 'Projects', path: '/projects' },
-    { icon: Inbox, label: 'Inbox', path: '/inbox' },
-    { icon: Calculator, label: 'ROI Calc', path: '/roi' },
+    { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
+    { icon: Inbox, label: 'Unified Inbox', path: '/inbox' },
+    { icon: Columns, label: 'Calendar', path: '/calendar' },
+    { icon: FolderKanban, label: 'Document Vault', path: '/documents' },
+    { icon: Zap, label: 'Analytics', path: '/analytics' },
+    { icon: Sparkles, label: 'AI Copilot', path: '/copilot' },
+    { icon: Users, label: 'Lead Pipeline', path: '/kanban' },
+    { icon: LayoutDashboard, label: 'Project Tracker', path: '/projects' },
+    { icon: Calculator, label: 'Billing', path: '/billing' },
   ];
 
   return (

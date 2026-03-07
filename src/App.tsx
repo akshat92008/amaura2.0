@@ -11,6 +11,7 @@ import { KanbanBoard } from './pages/KanbanBoard';
 import { Projects } from './pages/Projects';
 import { Inbox } from './pages/Inbox';
 import { ROI } from './pages/ROI';
+import { Calendar, Documents, Analytics, Copilot, Billing } from './pages/Features';
 
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useAuth } from './hooks/useAuth';
@@ -18,7 +19,10 @@ import { useAuth } from './hooks/useAuth';
 const AppContent = () => {
   const initAuth = useAuth(state => state.init);
   const location = useLocation();
-  const isDashboardRoute = ['/dashboard', '/leads', '/kanban', '/projects', '/inbox', '/roi', '/settings', '/admin'].includes(location.pathname);
+  const isDashboardRoute = [
+    '/dashboard', '/leads', '/kanban', '/projects', '/inbox', '/roi', '/settings', '/admin',
+    '/calendar', '/documents', '/analytics', '/copilot', '/billing'
+  ].includes(location.pathname);
 
   useEffect(() => {
     initAuth();
@@ -38,6 +42,11 @@ const AppContent = () => {
           <Route path="/projects" element={<Projects />} />
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/roi" element={<ROI />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/documents" element={<Documents />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/copilot" element={<Copilot />} />
+          <Route path="/billing" element={<Billing />} />
         </Routes>
       </main>
       {!isDashboardRoute && <Footer />}

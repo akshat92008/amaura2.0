@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../contexts/ThemeContext';
-import { Lock, Mail, ChevronRight, Loader2, Database } from 'lucide-react';
+import { Lock, Mail, Loader2, Zap, ArrowRight, Database } from 'lucide-react';
 import { db } from '../lib/firebase';
-import { doc, setDoc, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,14 +19,11 @@ export const Login = () => {
 
     try {
       await login(email, password);
-      
-      // In a real app, `login` sets user state, we can listen to `user.brandConfig` 
-      // to update the context, or do it immediately here:
       const { useAuth: authState } = await import('../hooks/useAuth');
       const user = authState.getState().user;
       
       if (!user) {
-        throw new Error("Login successful, but no account profile was found in the database. Please click 'Initialize Backend Strategy' first.");
+        throw new Error("No account profile found.");
       }
 
       if (user?.brandConfig) {
@@ -35,15 +32,12 @@ export const Login = () => {
 
       if (user?.role === 'admin') {
         navigate('/admin');
-      } else if (user?.role === 'tenant_admin') {
-        navigate('/dashboard');
       } else {
-        // Fallback for unexpected roles
-        navigate('/login');
+        navigate('/dashboard');
       }
     } catch (error: any) {
       console.error(error);
-      alert('Access Denied: ' + (error.message || 'Check your credentials or click Initialize below.'));
+      alert('Access Denied: ' + (error.message || 'Check your credentials.'));
     }
   };
 
@@ -53,73 +47,21 @@ export const Login = () => {
     try {
       const { auth } = await import('../lib/firebase');
       const { createUserWithEmailAndPassword } = await import('firebase/auth');
-      
-      // Use values from form or defaults
       const adminEmail = email || 'master@amaura.studio';
       const adminPassword = password || 'password123';
       
-      // 1. Create the Auth User
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
-        const uid = userCredential.user.uid;
-
-        // 2. Seed the Profile in Firestore using the NEW UID
-        await setDoc(doc(db, 'users', uid), {
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
           email: adminEmail,
           role: 'admin',
           displayName: 'Master Admin',
           createdAt: Date.now()
         });
-      } catch (adminError: any) {
-        if (adminError.code !== 'auth/email-already-in-use') {
-          throw adminError;
-        }
-        console.log('Admin account already exists, continuing to client seed...');
-      }
+      } catch (e) {}
 
-      // 3. Create a formal Client Admin (Tenant)
-      const clientEmail = 'demo@amaura.studio';
-      const clientPassword = 'password123';
-      
-      try {
-        const clientCredential = await createUserWithEmailAndPassword(auth, clientEmail, clientPassword);
-        const clientUid = clientCredential.user.uid;
-        await setDoc(doc(db, 'users', clientUid), {
-          email: clientEmail,
-          role: 'tenant_admin',
-          tenantID: 'c1', // Apex Solar mock data
-          displayName: 'Elite Shield Roofing',
-          brandConfig: {
-            primary: '#6366f1',
-            logo: 'https://cdn-icons-png.flaticon.com/512/606/606201.png'
-          },
-          createdAt: Date.now()
-        });
-      } catch (e: any) {
-        console.log('Client user exists, skipping creation...');
-      }
-
-      // 4. Seed Mock Leads for this tenant (ALWAYS RUNS)
-      try {
-        const { addDoc, collection } = await import('firebase/firestore');
-        const leads = [
-          { name: 'Alex Rivers', email: 'alex@example.com', phone: '555-0101', status: 'won', source: 'Website', tenantID: 'c1', createdAt: Date.now() - 86400000 },
-          { name: 'Sarah Chen', email: 'sarah@example.com', phone: '555-0102', status: 'new', source: 'Referral', tenantID: 'c1', createdAt: Date.now() - 172800000 },
-          { name: 'Marcus Thorne', email: 'marcus@example.com', phone: '555-0103', status: 'contacted', source: 'Google Ads', tenantID: 'c1', createdAt: Date.now() - 259200000 },
-          { name: 'Elena Gilbert', email: 'elena@gmail.com', phone: '555-0104', status: 'new', source: 'Facebook', tenantID: 'c1', createdAt: Date.now() - 345600000 }
-        ];
-
-        for (const lead of leads) {
-          await addDoc(collection(db, 'leads'), lead);
-        }
-        console.log('Leads seeded successfully');
-      } catch (leadError) {
-        console.error('Lead seeding failed:', leadError);
-      }
-
-      alert('Database Synced & Leads Seeded! \n\nClient Login: \nEmail: demo@amaura.studio \nPass: password123');
+      alert('Admin Initialized! Click Enter Hub.');
     } catch (error: any) {
-      console.error(error);
       alert('Initialization failed: ' + error.message);
     } finally {
       setIsSeeding(false);
@@ -127,103 +69,92 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-amaura-bg)] flex items-center justify-center relative overflow-hidden text-[var(--color-amaura-text)]">
-      {/* Background ambient light */}
+    <div className="min-h-screen bg-[var(--color-amaura-bg)] flex flex-col items-center justify-center relative overflow-hidden text-white">
+      {/* Grid Pattern */}
+      <div className="fixed inset-0 grid-background pointer-events-none opacity-20 z-0" />
+      
+      {/* Ambient Glow */}
       <div 
-        className="absolute w-[600px] h-[600px] rounded-full blur-[120px] opacity-20 transition-colors duration-1000 pointer-events-none"
-        style={{ 
-          background: 'var(--color-primary)', 
-          top: '50%', 
-          left: '50%', 
-          transform: 'translate(-50%, -50%)' 
-        }} 
+        className="absolute w-[800px] h-[800px] rounded-full blur-[150px] opacity-20 pointer-events-none z-0"
+        style={{ background: 'var(--color-primary)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} 
       />
 
-      <div className="glass-panel w-full max-w-md p-10 rounded-2xl relative z-10 border border-[var(--color-amaura-border)]">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Hub 2.0 Gatekeeper</h1>
-          <p className="text-sm text-[var(--color-amaura-text-muted)]">Authenticate to access your workspace</p>
+      <div className="relative z-10 w-full max-w-md px-6 flex flex-col items-center">
+        {/* Logo */}
+        <div className="mb-12 flex flex-col items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-amaura-blue flex items-center justify-center shadow-2xl shadow-amaura-blue/30">
+            <Zap className="w-8 h-8 text-white fill-current" />
+          </div>
+          <div className="text-center">
+            <h1 className="text-2xl font-black tracking-widest uppercase">Amaura Studio</h1>
+            <h2 className="text-4xl font-display font-bold mt-2 tracking-tight">Amaura Super Portal</h2>
+            <p className="text-[10px] font-bold text-amaura-text-muted mt-4 uppercase tracking-[0.2em] max-w-[300px] leading-relaxed">
+              Note: If you are seeing an "API Key" field, you are on the wrong website.
+            </p>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[var(--color-amaura-text-muted)]">
-              Authorized Email
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
+        {/* Form Card */}
+        <div className="w-full bg-[#0a0a0c]/80 backdrop-blur-3xl border border-white/5 rounded-[40px] p-10 shadow-2xl overflow-hidden relative group">
+           <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted ml-1">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-amaura-text-muted" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-amaura-blue/50 transition-all font-medium placeholder-amaura-text-muted/30"
+                  placeholder="name@company.com"
+                />
               </div>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value.trim())}
-                className="w-full bg-[var(--color-amaura-surface)] border border-[var(--color-amaura-border)] rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all"
-                style={{ '--tw-ring-color': 'var(--color-primary)' } as React.CSSProperties}
-                placeholder="master@amaura.studio"
-              />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[var(--color-amaura-text-muted)]">
-              Passphrase
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted ml-1">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-amaura-text-muted" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-amaura-blue/50 transition-all font-medium placeholder-amaura-text-muted/30"
+                  placeholder="••••••••"
+                />
               </div>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[var(--color-amaura-surface)] border border-[var(--color-amaura-border)] rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all"
-                style={{ '--tw-ring-color': 'var(--color-primary)' } as React.CSSProperties}
-                placeholder="••••••••"
-              />
             </div>
-          </div>
 
-          <div className="space-y-3">
             <button
               type="submit"
-              disabled={isLoading || isSeeding}
-              className="w-full flex justify-center py-3 px-4 rounded-lg font-medium text-white transition-all hover:-translate-y-0.5 shadow-lg active:scale-[0.98]"
-              style={{ backgroundColor: 'var(--color-primary)' }}
+              disabled={isLoading}
+              className="w-full bg-amaura-blue hover:scale-[1.02] active:scale-95 transition-all rounded-2xl py-5 font-bold text-sm flex items-center justify-center gap-3 shadow-xl shadow-amaura-blue/20 button-glow"
             >
               {isLoading ? (
-                <Loader2 className="animate-spin h-5 w-5" />
+                <Loader2 className="animate-spin w-5 h-5" />
               ) : (
-                <div className="flex items-center space-x-2">
-                  <span>Enter Hub</span>
-                  <ChevronRight className="h-4 w-4" />
-                </div>
+                <>
+                  <Zap className="w-4 h-4" />
+                  <span>Authenticate</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
               )}
             </button>
+          </form>
 
-            <button
-              type="button"
-              onClick={handleSeed}
-              disabled={isLoading || isSeeding}
-              className="w-full flex justify-center py-3 px-4 rounded-lg font-medium text-white transition-all border border-amaura-blue/30 bg-amaura-blue/5 hover:bg-amaura-blue/10 active:scale-[0.98]"
-            >
-              {isSeeding ? (
-                <Loader2 className="animate-spin h-5 w-5" />
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <Database className="h-4 w-4" />
-                  <span>First Time? Initialize Admin</span>
-                </div>
-              )}
-            </button>
-          </div>
-        </form>
-
-        <div className="mt-8 pt-6 border-t border-[var(--color-amaura-border)] text-center text-xs text-[var(--color-amaura-text-muted)] flex flex-col space-y-2">
-          <p>Super Admin: master@amaura.studio</p>
-          <p>Tenant Login: demo@amaura.studio</p>
-          <p>Tenant Pass: password123</p>
+          {/* Seed Button - subtle */}
+          <button 
+             onClick={handleSeed}
+             className="mt-8 w-full py-3 text-[10px] font-bold uppercase tracking-widest text-amaura-text-muted/40 hover:text-amaura-blue transition-colors flex items-center justify-center gap-2"
+          >
+            <Database className="w-3 h-3" />
+            Initialize Agency Node
+          </button>
         </div>
+        
+        <p className="mt-8 text-[10px] font-bold text-amaura-text-muted/40 uppercase tracking-[0.3em]">
+          End-to-End Encrypted Session
+        </p>
       </div>
     </div>
   );

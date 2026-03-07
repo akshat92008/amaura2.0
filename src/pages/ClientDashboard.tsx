@@ -1,221 +1,118 @@
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
-import { BentoGrid, BentoBox } from '../components/BentoGrid';
-import { ROICalculator } from '../components/ROICalculator';
-import { LeadTable } from '../components/crm/LeadTable';
 import { useLeads } from '../hooks/useLeads';
 import { useAuth } from '../hooks/useAuth';
 import { AnalyticsCards } from '../components/crm/AnalyticsCards';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  ArrowUpRight,
-  Sparkles,
-  Zap,
-  Activity,
-  Percent,
-  TrendingUp,
-  DollarSign,
-  Users
-} from 'lucide-react';
-import { LeadInsight } from '../components/LeadInsight';
-import { PerformanceChart } from '../components/PerformanceChart';
-import { ActivityFeed } from '../components/ActivityFeed';
+import { Sparkles, MessageSquare, Box, Wallet, CheckCircle2 } from 'lucide-react';
 
 export const ClientDashboard = () => {
   const { leads, loading } = useLeads();
   const { user } = useAuth();
 
-  // Simple stats calculation
-  const totalLeads = leads.length;
-  const wonLeads = leads.filter(l => l.status === 'won').length;
-  const convRate = totalLeads > 0 ? ((wonLeads / totalLeads) * 100).toFixed(1) : '0.0';
+  // Mock distribution calculation based on lead status
+  const distribution = [
+    { label: 'New', count: leads.filter(l => l.status === 'new').length },
+    { label: 'Contacted', count: leads.filter(l => l.status === 'contacted').length },
+    { label: 'Proposal', count: leads.filter(l => l.status === 'proposal').length },
+    { label: 'Closed', count: leads.filter(l => l.status === 'won').length }
+  ];
+  const maxCount = Math.max(...distribution.map(d => d.count), 1);
+
+  const activities = [
+    { icon: MessageSquare, label: 'Lead moved to Proposal', time: '2 hours ago', color: '#8b5cf6' },
+    { icon: Box, label: 'Alpha Build phase in progress', time: '1 day ago', color: '#4f46e5' },
+    { icon: Wallet, label: 'Deposit payment confirmed on-chain', time: '3 days ago', color: '#10b981' },
+    { icon: CheckCircle2, label: '6 new leads captured from website', time: '1 week ago', color: '#f59e0b' }
+  ];
 
   return (
-    <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
+    <div className="flex min-h-screen bg-[#030303] text-white">
       <Sidebar />
       
       <main className="flex-grow ml-64 p-8 lg:p-12 relative overflow-y-auto">
-        {/* Ambient background glows */}
-        <div 
-          className="absolute -top-[10%] -right-[10%] w-[60%] h-[60%] rounded-full blur-[180px] opacity-20 pointer-events-none animate-pulse"
-          style={{ background: 'var(--color-primary)' }}
-        />
-        <div 
-          className="absolute bottom-[-10%] left-[10%] w-[40%] h-[40%] rounded-full blur-[150px] opacity-10 pointer-events-none"
-          style={{ background: 'var(--color-amaura-blue)' }}
-        />
-        
-        <div className="max-w-7xl mx-auto space-y-12 relative z-10">
-          {/* Revenue Performance Graph at the Top */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <BentoBox title="Revenue Performance" className="overflow-hidden">
-              <div className="h-[300px]">
-                <PerformanceChart leads={leads} />
-              </div>
-            </BentoBox>
-          </motion.div>
-
+        <div className="max-w-7xl mx-auto space-y-10 relative z-10">
+          
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-[var(--color-primary)] mb-2">
-                <Sparkles className="w-4 h-4 fill-current" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Dashboard Overview</span>
-              </div>
-              <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight">
-                Welcome back, <span style={{ color: 'var(--color-primary)' }}>{user?.displayName || 'Partner'}</span>
-              </h1>
-            </div>
-            <div className="bg-[var(--color-amaura-surface)] border border-[var(--color-amaura-border)] rounded-2xl px-6 py-3 flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-[var(--color-amaura-text-muted)] text-[10px] uppercase font-bold tracking-widest">Workspace ID</p>
-                <p className="text-xs font-mono">{user?.tenantID}</p>
-              </div>
-              <div className="w-px h-8 bg-[var(--color-amaura-border)]" />
-              <div 
-                className="w-3 h-3 rounded-full animate-pulse shadow-[0_0_10px_rgba(0,255,157,0.5)] bg-[var(--color-amaura-emerald)]"
-              />
-            </div>
+          <div className="flex flex-col gap-2">
+            <h1 className="text-4xl font-display font-bold tracking-tight">
+              Welcome back, {user?.displayName || 'Partner'}
+            </h1>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">
+              Your revenue engine is performing optimally.
+            </p>
           </div>
 
           <AnalyticsCards leads={leads} />
 
-          {/* Stats & Tools Grid */}
-          <motion.div 
-            initial="hidden"
-            animate="show"
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.1
-                }
-              }
-            }}
-          >
-            <BentoGrid>
-              {/* AI Highlight */}
-
-              {/* AI Highlight */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-                <BentoBox title="AI Strategic Insight" className="border-[var(--color-primary)]/20 shadow-[0_0_30px_rgba(124,58,237,0.05)] h-full">
-                  {leads.length > 0 ? (() => {
-                    const topLead = [...leads].sort((a,b) => b.createdAt - a.createdAt)[0];
-                    const aiScore = topLead.phone ? 94 : 72;
-                    const intent = aiScore > 85 ? 'positive' : 'neutral';
-                    const explanation = `Identified strong intent pattern from recent ${topLead.source || 'Direct'} lead (${topLead.name}). Recommend immediate follow up via ${topLead.phone ? 'Phone' : 'Email'}.`;
-                    
-                    return (
-                      <LeadInsight 
-                        score={aiScore} 
-                        sentiment={intent} 
-                        explanation={explanation}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Pipeline Distribution */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-[#0a0a0c] border border-white/5 rounded-3xl p-8"
+            >
+              <div className="flex justify-between items-center mb-10">
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Pipeline Distribution</h3>
+                <span className="text-[10px] font-bold text-amaura-text-muted/40 uppercase tracking-widest">{leads.length} total leads</span>
+              </div>
+              
+              <div className="space-y-6">
+                {distribution.map((d) => (
+                  <div key={d.label} className="space-y-2">
+                    <div className="flex justify-between items-end">
+                      <span className="text-xs font-bold text-amaura-text-muted">{d.label}</span>
+                      <span className="text-sm font-display font-bold">{d.count}</span>
+                    </div>
+                    <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(d.count / maxCount) * 100}%` }}
+                        transition={{ duration: 1, ease: 'easeOut' }}
+                        className="h-full bg-amaura-blue"
+                        style={{ boxShadow: '0 0 10px rgba(79, 70, 229, 0.4)' }}
                       />
-                    )
-                  })() : (
-                    <LeadInsight 
-                      score={0} 
-                      sentiment="neutral" 
-                      explanation="No leads in pipeline. Waiting for inbound data to generate strategic insights."
-                    />
-                  )}
-                </BentoBox>
-              </motion.div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
 
-              {/* Stat 1 */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-                <BentoBox title="Total Pipeline">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-5xl font-display font-bold">{totalLeads}</h4>
-                      <div className="flex items-center text-[var(--color-amaura-emerald)] text-xs mt-1">
-                        <ArrowUpRight className="w-3 h-3 mr-1" />
-                        <span>+12.5% vs last month</span>
+            {/* Recent Activity */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-[#0a0a0c] border border-white/5 rounded-3xl p-8"
+            >
+              <div className="mb-10">
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">Recent Activity</h3>
+              </div>
+
+              <div className="space-y-8">
+                {activities.map((a, i) => (
+                  <div key={i} className="flex items-center justify-between group cursor-pointer">
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center transition-colors group-hover:bg-white/10">
+                        <a.icon className="w-4 h-4" style={{ color: a.color }} />
                       </div>
+                      <span className="text-xs font-bold text-amaura-text-muted group-hover:text-white transition-colors">{a.label}</span>
                     </div>
-                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
-                      <Users className="w-6 h-6 text-[var(--color-amaura-text-muted)] group-hover:text-white transition-colors" />
-                    </div>
+                    <span className="text-[10px] font-bold text-amaura-text-muted/40 uppercase tracking-widest">{a.time}</span>
                   </div>
-                </BentoBox>
-              </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
 
-              {/* Stat 2 */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-                <BentoBox title="Conversion Velocity">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-5xl font-display font-bold">{convRate}%</h4>
-                      <div className="flex items-center text-[var(--color-amaura-text-muted)] text-xs mt-1">
-                        <span>Targeting 15%</span>
-                      </div>
-                    </div>
-                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
-                      <Percent className="w-6 h-6 text-[var(--color-amaura-text-muted)] group-hover:text-white transition-colors" />
-                    </div>
-                  </div>
-                </BentoBox>
-              </motion.div>
+          {/* AI Status Indicator - matches Screenshot 5 bottom-left of dashboard area */}
+          <div className="pt-4">
+             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-amaura-emerald/5 border border-amaura-emerald/20">
+                <div className="w-2 h-2 rounded-full bg-amaura-emerald animate-pulse" />
+                <span className="text-[10px] font-bold text-amaura-emerald uppercase tracking-[0.2em]">System Active</span>
+             </div>
+          </div>
 
-              {/* Interactive Timeline */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="row-span-1 md:row-span-2 h-full">
-                <BentoBox className="overflow-y-auto h-full">
-                  <ActivityFeed leads={leads} />
-                </BentoBox>
-              </motion.div>
-
-              {/* Partner Perk */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
-                <BentoBox className="bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent border-[var(--color-primary)]/20 h-full">
-                  <div className="h-full flex flex-col justify-between">
-                    <div className="space-y-4">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-[10px] font-black uppercase tracking-widest">
-                        <Zap className="w-3 h-3" /> Priority Tier
-                      </div>
-                      <div>
-                        <h5 className="font-bold text-lg leading-tight">Partner Perks</h5>
-                        <p className="text-xs text-[var(--color-amaura-text-muted)]">Exclusive access to Tier 1 pricing.</p>
-                      </div>
-                    </div>
-                    <button 
-                      className="w-full py-2.5 rounded-xl text-xs font-bold transition-all hover:brightness-110 active:scale-95"
-                      style={{ backgroundColor: 'var(--color-primary)' }}
-                    >
-                      View Benefits
-                    </button>
-                  </div>
-                </BentoBox>
-              </motion.div>
-
-              {/* Large Lead Table */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="col-span-1 md:col-span-3">
-                <LeadTable leads={leads} loading={loading} />
-              </motion.div>
-
-              {/* ROI Calculator Box (Standalone tool) */}
-              <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="col-span-1 md:col-span-3">
-                <div className="p-8 lg:p-12 glass-panel rounded-[40px] border border-white/5 bg-gradient-to-br from-amaura-surface to-transparent shadow-2xl relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                     <Sparkles className="w-24 h-24 text-[var(--color-primary)]" />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="mb-10 text-left">
-                      <h3 className="text-3xl font-black font-display mb-2">ROI Intelligence</h3>
-                      <p className="text-amaura-text-muted text-sm max-w-lg">Advanced simulations for your home service revenue potential.</p>
-                    </div>
-                    <ROICalculator />
-                  </div>
-                </div>
-              </motion.div>
-            </BentoGrid>
-          </motion.div>
         </div>
       </main>
     </div>

@@ -13,7 +13,9 @@ import {
   ShieldCheck, 
   BarChart3,
   TrendingUp,
-  ExternalLink
+  ExternalLink,
+  Database,
+  Code2
 } from 'lucide-react';
 import { ROICalculator } from '../components/ROICalculator';
 
@@ -125,13 +127,13 @@ export const LandingPage = () => {
                 { 
                   title: 'CRM Development', 
                   desc: 'Custom multi-tenant CRM with AI lead scoring, Kanban pipelines, and automated follow-ups.',
-                  icon: <Box className="w-6 h-6 text-amaura-purple" />,
+                  icon: <Database className="w-6 h-6 text-amaura-purple" />,
                   tag: 'CRM'
                 },
                 { 
                   title: 'Web3 Billing Engine', 
                   desc: 'Accept USDC on Polygon. Milestone payments cryptographically verified on-chain.',
-                  icon: <Zap className="w-6 h-6 text-amaura-purple" />,
+                  icon: <Code2 className="w-6 h-6 text-amaura-purple" />,
                   tag: 'Web3'
                 },
                 { 

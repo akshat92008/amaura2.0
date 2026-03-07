@@ -30,34 +30,43 @@ const FadeInView = ({ children, delay = 0, className = "" }: { children: React.R
 );
 
 const BackgroundGlow = () => (
-  <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+  <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-[#030303]">
+    {/* Permanent Atmospheric Base */}
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(139,92,246,0.15),transparent_60%)]" />
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(79,70,229,0.1),transparent_60%)]" />
+
+    {/* Dynamic Blobs */}
     <motion.div 
       animate={{ 
-        scale: [1, 1.2, 1],
-        opacity: [0.3, 0.5, 0.3],
-        x: [0, 50, 0],
-        y: [0, -30, 0]
+        scale: [1, 1.3, 1],
+        opacity: [0.5, 0.8, 0.5],
+        x: [-50, 50, -50],
+        y: [-20, 20, -20]
       }}
-      transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-      className="absolute top-[-10%] left-[-10%] w-[80%] h-[80%] bg-amaura-purple/15 rounded-full blur-[160px]" 
+      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-amaura-purple/40 rounded-full blur-[120px]" 
     />
+    
     <motion.div 
       animate={{ 
-        scale: [1.2, 1, 1.2],
-        opacity: [0.2, 0.4, 0.2],
-        x: [0, -60, 0],
-        y: [0, 40, 0]
+        x: [50, -50, 50],
+        y: [30, -30, 30],
+        opacity: [0.4, 0.6, 0.4],
       }}
-      transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-      className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-amaura-blue/10 rounded-full blur-[160px]" 
+      transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute top-[20%] right-[-5%] w-[500px] h-[500px] bg-amaura-blue/30 rounded-full blur-[100px]" 
     />
+    
     <motion.div 
       animate={{ 
-        opacity: [0.1, 0.2, 0.1],
+        opacity: [0.2, 0.5, 0.2],
       }}
-      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-      className="absolute top-[30%] left-[20%] w-[40%] h-[40%] bg-amaura-purple/10 rounded-full blur-[120px]" 
+      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-amaura-purple/20 rounded-full blur-[150px]" 
     />
+
+    {/* Grain Overlay */}
+    <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://res.cloudinary.com/dqr66zvtj/image/upload/v1675104443/noise_pfxszq.png')]" />
   </div>
 );
 
@@ -96,15 +105,11 @@ export const LandingPage = () => {
   const [annualUpside, setAnnualUpside] = useState(0);
 
   useEffect(() => {
-    // Logic: Improved conversion from X to X+3% (e.g. 2% to 5%)
-    // Let's assume Amaura improves close rate by 5% baseline or multiplies it.
-    // For simplicity: (Visitors * (ImprovedRate - CurrentRate)) * TicketSize
-    const improvedRate = closeRate + 5;
-    const monthlyGain = (visitors * (5 / 100)) * (ticketSize * 0.1); // Simplified impact model for "Lost"
-    // Let's make it look realistic:
-    const currentRevenue = (visitors * (closeRate / 100) * ticketSize);
-    const potentialRevenue = (visitors * ((closeRate + 3) / 100) * ticketSize);
-    const diff = potentialRevenue - currentRevenue;
+    // Audit math: (Visitors * CloseRate * TicketSize) = Current
+    // Improved = (Visitors * (CloseRate + 3%) * (TicketSize * 1.1)) // Assuming 10% higher ticket too
+    const currentRev = visitors * (closeRate / 100) * ticketSize;
+    const potentialRev = visitors * ((closeRate + 4) / 100) * (ticketSize * 1.05); // More aggressive impact
+    const diff = potentialRev - currentRev;
     
     setLostMonthly(diff);
     setAnnualUpside(diff * 12);
@@ -346,8 +351,8 @@ export const LandingPage = () => {
                 <div className="glass-card h-full !p-16">
                    <div className="space-y-16">
                      {[
-                       { label: 'Monthly Website Visitors', val: visitors.toLocaleString(), min: 500, max: 50000, step: 500, current: visitors, set: setVisitors },
-                       { label: 'Average Ticket Size ($)', val: `$${ticketSize.toLocaleString()}`, min: 1000, max: 100000, step: 1000, current: ticketSize, set: setTicketSize },
+                       { label: 'Monthly Website Visitors', val: visitors.toLocaleString('en-US'), min: 500, max: 50000, step: 500, current: visitors, set: setVisitors },
+                       { label: 'Average Ticket Size ($)', val: `$${ticketSize.toLocaleString('en-US')}`, min: 1000, max: 100000, step: 1000, current: ticketSize, set: setTicketSize },
                        { label: 'Current Close Rate (%)', val: `${closeRate}%`, min: 1, max: 50, step: 1, current: closeRate, set: setCloseRate }
                      ].map((slider, i) => (
                        <div key={i}>
@@ -366,11 +371,11 @@ export const LandingPage = () => {
                               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                             />
                             <div 
-                              className="absolute top-0 left-0 h-full bg-amaura-purple rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-all" 
+                              className="absolute top-0 left-0 h-full bg-amaura-purple rounded-full shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-none" 
                               style={{ width: `${((slider.current - slider.min) / (slider.max - slider.min)) * 100}%` }}
                             />
                             <div 
-                              className="absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white border-4 border-amaura-purple rounded-full shadow-2xl transition-all z-10 pointer-events-none"
+                              className="absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white border-4 border-amaura-purple rounded-full shadow-2xl transition-none z-10 pointer-events-none"
                               style={{ left: `${((slider.current - slider.min) / (slider.max - slider.min)) * 100}%`, transform: 'translate(-50%, -50%)' }}
                             />
                          </div>
@@ -392,8 +397,8 @@ export const LandingPage = () => {
                         <TrendingUp className="w-32 h-32 text-amaura-purple" />
                       </div>
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-amaura-purple mb-6 relative z-10">Lost Monthly Revenue</p>
-                      <h3 className="text-5xl md:text-6xl font-display font-black tracking-tighter mb-6 relative z-10">${Math.round(lostMonthly).toLocaleString()}</h3>
-                      <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black relative z-10">Incr. conversion {closeRate}% → {closeRate + 3}% with Amaura</p>
+                      <h3 className="text-5xl md:text-6xl font-display font-black tracking-tighter mb-6 relative z-10">${Math.round(lostMonthly).toLocaleString('en-US')}</h3>
+                      <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black relative z-10">Incr. conversion {closeRate}% → {closeRate + 4}% with Amaura</p>
                    </div>
                  </FadeInView>
                  
@@ -403,7 +408,7 @@ export const LandingPage = () => {
                         <ArrowRight className="w-32 h-32 text-amaura-emerald -rotate-45" />
                       </div>
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-amaura-emerald mb-6 relative z-10">Annual Upside Potential</p>
-                      <h3 className="text-5xl md:text-6xl font-display font-black tracking-tighter mb-6 relative z-10">${Math.round(annualUpside).toLocaleString()}</h3>
+                      <h3 className="text-5xl md:text-6xl font-display font-black tracking-tighter mb-6 relative z-10">${Math.round(annualUpside).toLocaleString('en-US')}</h3>
                       <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black relative z-10">Extra yield over 12 months pipeline</p>
                    </div>
                  </FadeInView>

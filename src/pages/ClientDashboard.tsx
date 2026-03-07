@@ -74,7 +74,7 @@ export const ClientDashboard = () => {
 
           {/* Top Row: Core Analytics */}
           <motion.div variants={itemVariants}>
-             <AnalyticsCards />
+             <AnalyticsCards leads={leads} />
           </motion.div>
 
           {/* Main Content Area - Bento Grid Structure */}

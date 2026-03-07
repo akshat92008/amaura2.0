@@ -58,7 +58,7 @@ export const LandingPage = () => {
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/70">CRM Solution in 1 Place</span>
           </motion.div>
 
-          <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl lg:text-9xl font-display font-bold leading-[0.95] tracking-tight mb-10">
+          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[0.95] tracking-tight mb-10">
              We Engineer <span className="text-white">High-Ticket</span> <br />
              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amaura-blue via-purple-400 to-amaura-blue animate-shimmer" style={{ backgroundSize: '200% auto' }}>CRMs</span> <br />
              <span className="text-white">for Home Service Brands.</span>

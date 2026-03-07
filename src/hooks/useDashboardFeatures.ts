@@ -11,6 +11,7 @@ import {
   limit 
 } from 'firebase/firestore';
 import { useAuth } from './useAuth';
+import { getGeminiResponse } from '../lib/gemini';
 
 export interface Message {
   id: string;
@@ -24,7 +25,7 @@ export interface CalendarEvent {
   id: string;
   title: string;
   date: string;
-  type: 'installation' | 'survey' | 'follow-up';
+  type: 'installation' | 'survey' | 'follow-up' | 'meeting' | 'urgent';
   tenantID: string;
 }
 
@@ -47,7 +48,7 @@ export const useDashboardFeatures = () => {
   const sendAIMessage = async (text: string) => {
     if (!user) return;
     
-    // Add user message
+    // Add user message to Firestore
     await addDoc(collection(db, 'messages'), {
       text,
       sender: 'user',
@@ -55,27 +56,25 @@ export const useDashboardFeatures = () => {
       createdAt: serverTimestamp(),
     });
 
-    // Intelligent Response Logic
-    let response = "I've analyzed your infrastructure. How else can I help you optimize today?";
-    const lowerText = text.toLowerCase();
-    
-    if (lowerText.includes('revenue') || lowerText.includes('money')) {
-      response = "Analyzing current revenue nodes... We're seeing a 14% uplift in projected GMV if we optimize the lead routing sequence.";
-    } else if (lowerText.includes('lead') || lowerText.includes('crm')) {
-      response = "The CRM pipeline is healthy. I recommend provisioning a new milestone for the 'Apex Solar' project to maintain velocity.";
-    } else if (lowerText.includes('calendar') || lowerText.includes('event')) {
-      response = "I can help you coordinate the fulfillment timeline. Would you like to provision a new milestone?";
-    }
+    // Prepare history for Gemini
+    // Filter out messages without createdAt to avoid errors during initial sync
+    const history = messages
+      .filter(m => m.createdAt)
+      .map(m => ({
+        role: m.sender === 'user' ? 'user' as const : 'model' as const,
+        parts: [{ text: m.text }]
+      }));
 
-    // Simulate AI response
-    setTimeout(async () => {
-      await addDoc(collection(db, 'messages'), {
-        text: response,
-        sender: 'ai',
-        tenantID: user.tenantID || 'admin',
-        createdAt: serverTimestamp(),
-      });
-    }, 1500);
+    // Get real response from Gemini
+    const response = await getGeminiResponse(text, history);
+
+    // Add AI message to Firestore
+    await addDoc(collection(db, 'messages'), {
+      text: response,
+      sender: 'ai',
+      tenantID: user.tenantID || 'admin',
+      createdAt: serverTimestamp(),
+    });
   };
 
   // Calendar Logic

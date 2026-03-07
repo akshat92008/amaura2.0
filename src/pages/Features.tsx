@@ -16,9 +16,10 @@ import {
   ArrowUpRight,
   ChevronRight,
   Terminal,
-  Cpu,
-  ShieldCheck,
-  History
+  Cpu, 
+  ShieldCheck, 
+  History,
+  X
 } from 'lucide-react';
 import { useDashboardFeatures } from '../hooks/useDashboardFeatures';
 import { motion, AnimatePresence } from 'motion/react';
@@ -164,6 +165,12 @@ export const Copilot = () => {
 export const Calendar = () => {
   const { events, addEvent } = useDashboardFeatures();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newEvent, setNewEvent] = useState({ 
+    title: '', 
+    date: new Date().toISOString().split('T')[0], 
+    type: 'installation' as const 
+  });
 
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
@@ -171,19 +178,22 @@ export const Calendar = () => {
   const daysInMonth = getDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
   const firstDay = (getFirstDayOfMonth(currentDate.getFullYear(), currentDate.getMonth()) + 6) % 7; // Adjust for Mon start
 
-  const handleAddMilestone = async () => {
-    const title = prompt("Enter milestone title:");
-    if (!title) return;
+  const handleCreateEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEvent.title || !newEvent.date) return;
     
-    const dateInput = prompt("Enter date (YYYY-MM-DD):", currentDate.toISOString().split('T')[0]);
-    if (!dateInput) return;
-
-    await addEvent({
-      title,
-      date: dateInput,
-      type: 'installation'
-    });
+    await addEvent(newEvent);
+    setIsModalOpen(false);
+    setNewEvent({ title: '', date: new Date().toISOString().split('T')[0], type: 'installation' });
   };
+
+  const eventTypes = [
+    { value: 'installation', label: 'Installation', color: 'bg-amaura-blue' },
+    { value: 'survey', label: 'Site Survey', color: 'bg-orange-500' },
+    { value: 'meeting', label: 'Consultation', color: 'bg-purple-500' },
+    { value: 'follow-up', label: 'Follow Up', color: 'bg-amaura-emerald' },
+    { value: 'urgent', label: 'Urgent', color: 'bg-red-500' }
+  ];
   
   return (
     <div className="flex min-h-screen bg-[var(--color-amaura-bg)] text-white">
@@ -193,8 +203,8 @@ export const Calendar = () => {
           <div>
             <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight mb-3">Fulfillment Timeline</h1>
             <div className="flex items-center gap-4">
-               <div className="px-3 py-1 rounded-lg bg-orange-500/10 border border-orange-500/20 text-[10px] font-black text-orange-500 uppercase tracking-widest">
-                  {events.length} Active Nodes
+               <div className="px-3 py-1 rounded-lg bg-amaura-blue/10 border border-amaura-blue/20 text-[10px] font-black text-amaura-blue uppercase tracking-widest">
+                  {events.length} System Nodes
                </div>
                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amaura-text-muted">
                  {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
@@ -202,7 +212,7 @@ export const Calendar = () => {
             </div>
           </div>
           <button 
-            onClick={handleAddMilestone}
+            onClick={() => setIsModalOpen(true)}
             className="bg-amaura-blue px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-amaura-blue/20"
           >
             <Plus className="w-4 h-4" /> Provision Milestone
@@ -223,25 +233,108 @@ export const Calendar = () => {
 
             return (
               <div key={i} className={`min-h-[140px] bg-[#030303] p-6 hover:bg-white/[0.02] transition-colors relative group border-r border-b border-white/5 ${i % 7 === 6 ? 'border-r-0' : ''}`}>
-                 <span className={`text-xs font-black ${isCurrentMonth ? 'text-white/60' : 'text-white/5'} group-hover:text-amaura-blue`}>
+                 <span className={`text-xs font-black ${isCurrentMonth ? 'text-white/60' : 'text-white/5'} group-hover:text-amaura-blue transition-colors`}>
                    {isCurrentMonth ? dayNum : ''}
                  </span>
                  
-                 {dayEvents.map(event => (
-                   <motion.div 
-                     key={event.id}
-                     initial={{ opacity: 0, scale: 0.9 }}
-                     animate={{ opacity: 1, scale: 1 }}
-                     className="mt-4 p-4 bg-amaura-blue/10 border-l-4 border-amaura-blue rounded-r-2xl cursor-pointer hover:bg-amaura-blue/20 transition-all overflow-hidden"
-                   >
-                      <p className="text-[10px] font-black uppercase tracking-widest text-amaura-blue mb-1 truncate">{event.type}</p>
-                      <p className="text-xs font-bold truncate">{event.title}</p>
-                   </motion.div>
-                 ))}
+                 <div className="mt-2 space-y-2">
+                   {dayEvents.map(event => {
+                     const typeInfo = eventTypes.find(t => t.value === event.type) || eventTypes[0];
+                     return (
+                       <motion.div 
+                         key={event.id}
+                         initial={{ opacity: 0, scale: 0.95 }}
+                         animate={{ opacity: 1, scale: 1 }}
+                         className={`p-2.5 rounded-xl border border-white/5 cursor-pointer hover:border-white/20 transition-all overflow-hidden ${typeInfo.color}/10`}
+                       >
+                          <div className={`w-1 h-1 rounded-full ${typeInfo.color} mb-1.5`} />
+                          <p className="text-[9px] font-bold truncate text-white/80">{event.title}</p>
+                       </motion.div>
+                     );
+                   })}
+                 </div>
               </div>
             );
           })}
         </div>
+
+        {/* Add Event Modal */}
+        <AnimatePresence>
+          {isModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-xl bg-black/40">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="bg-[#0a0a0c] border border-white/10 rounded-[40px] p-10 max-w-lg w-full shadow-2xl relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amaura-blue/10 blur-[100px] rounded-full" />
+                <button onClick={() => setIsModalOpen(false)} className="absolute top-8 right-8 p-2 hover:bg-white/5 rounded-full transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+
+                <h2 className="text-3xl font-display font-bold mb-2">Provision Node</h2>
+                <p className="text-amaura-text-muted mb-8 text-sm font-medium">Synchronizing fulfillment milestones with the global core.</p>
+
+                <form onSubmit={handleCreateEvent} className="space-y-6 relative z-10 text-white/25">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-amaura-text-muted ml-2">Milestone Descriptor</label>
+                    <input 
+                      required
+                      value={newEvent.title}
+                      onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm focus:border-amaura-blue/50 outline-none transition-all font-medium placeholder:text-white/10"
+                      placeholder="e.g. Phase 1 Deployment"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-amaura-text-muted ml-2">Temporal Node</label>
+                       <input 
+                        required
+                        type="date"
+                        value={newEvent.date}
+                        onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm focus:border-amaura-blue/50 outline-none transition-all font-medium appearance-none"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-amaura-text-muted ml-2">Category</label>
+                       <select 
+                        value={newEvent.type}
+                        onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value as any })}
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm focus:border-amaura-blue/50 outline-none transition-all font-medium appearance-none"
+                      >
+                        {eventTypes.map(type => (
+                          <option key={type.value} value={type.value} className="bg-[#0a0a0c] text-white">
+                            {type.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 flex gap-4">
+                    <button 
+                      type="button"
+                      onClick={() => setIsModalOpen(false)}
+                      className="flex-grow bg-white/5 border border-white/5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
+                    >
+                      Abort
+                    </button>
+                    <button 
+                      type="submit"
+                      className="flex-grow bg-amaura-blue text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-amaura-blue/20"
+                    >
+                      Deploy Milestone
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );

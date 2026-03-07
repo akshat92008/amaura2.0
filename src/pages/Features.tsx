@@ -37,14 +37,21 @@ export const Copilot = () => {
     }
   }, [messages]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-    setIsThinking(true);
-    sendAIMessage(input);
+    
+    const currentInput = input;
     setInput('');
-    // Simulate thinking finish after 2s if no real response logic
-    setTimeout(() => setIsThinking(false), 2000);
+    setIsThinking(true);
+    
+    try {
+      await sendAIMessage(currentInput);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    } finally {
+      setIsThinking(false);
+    }
   };
 
   return (

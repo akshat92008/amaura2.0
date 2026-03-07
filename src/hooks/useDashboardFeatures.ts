@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { useAuth } from './useAuth';
 import { getGeminiResponse } from '../lib/gemini';
+import { useLocation } from 'react-router-dom';
 
 export interface Message {
   id: string;
@@ -40,9 +41,14 @@ export interface Document {
 
 export const useDashboardFeatures = () => {
   const { user } = useAuth();
+  const location = useLocation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
+
+  // Extract tenantID from URL query params
+  const queryParams = new URLSearchParams(location.search);
+  const activeTenantID = queryParams.get('tenantID') || user?.tenantID || 'admin';
 
   // AI Chat Logic
   const sendAIMessage = async (text: string) => {
@@ -52,12 +58,11 @@ export const useDashboardFeatures = () => {
     await addDoc(collection(db, 'messages'), {
       text,
       sender: 'user',
-      tenantID: user.tenantID || 'admin',
+      tenantID: activeTenantID,
       createdAt: serverTimestamp(),
     });
 
     // Prepare history for Gemini
-    // Filter out messages without createdAt to avoid errors during initial sync
     const history = messages
       .filter(m => m.createdAt)
       .map(m => ({
@@ -72,7 +77,7 @@ export const useDashboardFeatures = () => {
     await addDoc(collection(db, 'messages'), {
       text: response,
       sender: 'ai',
-      tenantID: user.tenantID || 'admin',
+      tenantID: activeTenantID,
       createdAt: serverTimestamp(),
     });
   };
@@ -82,7 +87,7 @@ export const useDashboardFeatures = () => {
     if (!user) return;
     await addDoc(collection(db, 'events'), {
       ...event,
-      tenantID: user.tenantID || 'admin',
+      tenantID: activeTenantID,
       createdAt: serverTimestamp(),
     });
   };
@@ -90,12 +95,10 @@ export const useDashboardFeatures = () => {
   useEffect(() => {
     if (!user) return;
 
-    const tenantID = user.tenantID || 'admin';
-
     // Messages Listener
     const qMessages = query(
       collection(db, 'messages'),
-      where('tenantID', '==', tenantID),
+      where('tenantID', '==', activeTenantID),
       orderBy('createdAt', 'desc'),
       limit(50)
     );
@@ -104,13 +107,13 @@ export const useDashboardFeatures = () => {
     });
 
     // Events Listener
-    const qEvents = query(collection(db, 'events'), where('tenantID', '==', tenantID));
+    const qEvents = query(collection(db, 'events'), where('tenantID', '==', activeTenantID));
     const unsubEvents = onSnapshot(qEvents, (snap) => {
       setEvents(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as CalendarEvent)));
     });
 
     // Documents Listener
-    const qDocs = query(collection(db, 'documents'), where('tenantID', '==', tenantID));
+    const qDocs = query(collection(db, 'documents'), where('tenantID', '==', activeTenantID));
     const unsubDocs = onSnapshot(qDocs, (snap) => {
       setDocuments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Document)));
     });
@@ -120,7 +123,7 @@ export const useDashboardFeatures = () => {
       unsubEvents();
       unsubDocs();
     };
-  }, [user]);
+  }, [user, activeTenantID]);
 
   return { 
     messages, 
